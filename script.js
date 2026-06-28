@@ -709,7 +709,7 @@ function renderPublicPropertyCard(item) {
   return `<article class="property-card enhanced-card" data-id="${escapeHtml(item.id)}" data-type="${escapeHtml(item.type)}" data-category="${escapeHtml(item.category)}" data-location="${escapeHtml(item.location.toLocaleLowerCase('tr-TR'))}" data-title="${escapeHtml(item.title.toLocaleLowerCase('tr-TR'))}">
     <a class="card-link" href="${escapeHtml(item.url)}" aria-label="${escapeHtml(item.title)} detay sayfasını aç">
       <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}">
-      <div class="property-body"><div class="meta"><span>${escapeHtml(item.type)} ${escapeHtml(item.category)}</span><span>${item.opportunity ? 'Fırsat' : 'Doğrulanmış'}</span></div><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.location)} · ${escapeHtml(item.rooms)} · ${escapeHtml(item.sqm)}</p><div class="summary-tags">${(item.tags || []).slice(0,3).map(tag => `<span>${escapeHtml(tag)}</span>`).join('')}</div><div class="card-bottom"><strong>${escapeHtml(item.price)}</strong><span class="detail-link">Detayı gör →</span></div></div>
+      <div class="property-body"><div class="meta"><span>${escapeHtml(item.type)} ${escapeHtml(item.category)}</span><span>${item.opportunity ? 'Fırsat' : 'Doğrulanmış'}</span></div><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.location)} · ${escapeHtml(item.rooms)} · ${escapeHtml(item.sqm)}</p><div class="smart-badges"><span>Yatırım ${escapeHtml(item.investmentScore || 75)}</span><span>${escapeHtml(item.source || 'Emlak Ofisinden')}</span>${item.priceDropped ? '<span>Fiyatı düştü</span>' : ''}</div><div class="summary-tags">${(item.tags || []).slice(0,3).map(tag => `<span>${escapeHtml(tag)}</span>`).join('')}</div><div class="card-bottom"><strong>${escapeHtml(item.price)}</strong><span class="detail-link">Detayı gör →</span></div></div>
     </a>
     <div class="card-tools"><button class="ghost-btn small" type="button" data-favorite-title="${escapeHtml(item.title)}">♡ Favori</button><label class="compare-check"><input type="checkbox" data-compare-id="${escapeHtml(item.id)}" ${checked}> Karşılaştır</label></div>
   </article>`;
@@ -725,6 +725,10 @@ function collectListingFilters() {
     maxPrice: parseNumber(get('#maxPrice')),
     minSqm: parseNumber(get('#minSqm')),
     maxSqm: parseNumber(get('#maxSqm')),
+    rooms: get('#listingRooms') || 'Hepsi',
+    source: get('#listingSource') || 'Hepsi',
+    date: get('#listingDate') || 'Hepsi',
+    feature: get('#listingFeature') || 'Hepsi',
     sort: get('#listingSort') || 'featured'
   };
 }
@@ -739,19 +743,28 @@ function filterPublicProperties() {
     const typeOk = f.type === 'Hepsi' || item.type === f.type;
     const catOk = f.category === 'Hepsi' || item.category === f.category || item.group === f.category;
     const locOk = f.location === 'Hepsi' || item.location.toLocaleLowerCase('tr-TR').includes(f.location.toLocaleLowerCase('tr-TR'));
+    const roomOk = f.rooms === 'Hepsi' || item.rooms === f.rooms || item.category === f.rooms;
+    const sourceOk = f.source === 'Hepsi' || (item.source || 'Emlak Ofisinden') === f.source;
+    const dateOk = f.date === 'Hepsi' || (f.date === 'Son 24 saat' ? item.listedDaysAgo <= 1 : f.date === 'Son 7 gün' ? item.listedDaysAgo <= 7 : item.listedDaysAgo <= 30);
+    const featureOk = f.feature === 'Hepsi' || (f.feature === 'Fiyatı düşen' ? item.priceDropped : f.feature === 'Haritada' ? item.hasMap : [item.title, item.location, item.category, item.group, item.rooms, ...(item.tags || [])].join(' ').toLocaleLowerCase('tr-TR').includes(f.feature.toLocaleLowerCase('tr-TR')));
     const qOk = !f.q || text.includes(f.q);
     const minPriceOk = !f.minPrice || item.priceNumber >= f.minPrice;
     const maxPriceOk = !f.maxPrice || item.priceNumber <= f.maxPrice;
     const minSqmOk = !f.minSqm || item.sqmNumber >= f.minSqm;
     const maxSqmOk = !f.maxSqm || item.sqmNumber <= f.maxSqm;
-    return typeOk && catOk && locOk && qOk && minPriceOk && maxPriceOk && minSqmOk && maxSqmOk;
+    return typeOk && catOk && locOk && roomOk && sourceOk && dateOk && featureOk && qOk && minPriceOk && maxPriceOk && minSqmOk && maxSqmOk;
   });
   items.sort((a,b) => {
+    if (f.sort === 'investment-score') return (b.investmentScore || 0) - (a.investmentScore || 0);
+    if (f.sort === 'rent-yield') return (b.rentYield || 0) - (a.rentYield || 0);
+    if (f.sort === 'price-drop') return Number(b.priceDropped || false) - Number(a.priceDropped || false) || b.priceNumber - a.priceNumber;
     if (f.sort === 'price-asc') return a.priceNumber - b.priceNumber;
     if (f.sort === 'price-desc') return b.priceNumber - a.priceNumber;
+    if (f.sort === 'sqm-asc') return a.sqmNumber - b.sqmNumber;
     if (f.sort === 'sqm-desc') return b.sqmNumber - a.sqmNumber;
-    if (f.sort === 'newest') return String(b.id).localeCompare(String(a.id));
-    return Number(b.featured || b.opportunity) - Number(a.featured || a.opportunity) || b.priceNumber - a.priceNumber;
+    if (f.sort === 'location-asc') return a.location.localeCompare(b.location, 'tr');
+    if (f.sort === 'newest') return (a.listedDaysAgo || 999) - (b.listedDaysAgo || 999);
+    return Number(b.featured || b.opportunity) - Number(a.featured || a.opportunity) || (b.investmentScore || 0) - (a.investmentScore || 0);
   });
   return items;
 }
@@ -795,19 +808,27 @@ function initPublicListingPage() {
   const params = new URLSearchParams(location.search);
   const map = { '#listingSearch': 'q', '#listingType': 'type', '#listingCategory': 'category' };
   Object.entries(map).forEach(([selector,key]) => { const el = document.querySelector(selector); if (el && params.get(key)) el.value = params.get(key); });
-  ['#listingSearch','#listingType','#listingCategory','#listingLocation','#minPrice','#maxPrice','#minSqm','#maxSqm','#listingSort'].forEach(selector => {
+  ['#listingSearch','#listingType','#listingCategory','#listingLocation','#minPrice','#maxPrice','#minSqm','#maxSqm','#listingRooms','#listingSource','#listingDate','#listingFeature','#listingSort'].forEach(selector => {
     const el = document.querySelector(selector); if (!el) return;
     el.addEventListener(el.tagName === 'INPUT' ? 'input' : 'change', renderPublicListings);
   });
   document.querySelector('#clearListingFilters')?.addEventListener('click', () => {
     ['#listingSearch','#minPrice','#maxPrice','#minSqm','#maxSqm'].forEach(s => { const el = document.querySelector(s); if (el) el.value = ''; });
-    ['#listingType','#listingCategory','#listingLocation'].forEach(s => { const el = document.querySelector(s); if (el) el.value = 'Hepsi'; });
+    ['#listingType','#listingCategory','#listingLocation','#listingRooms','#listingSource','#listingDate','#listingFeature'].forEach(s => { const el = document.querySelector(s); if (el) el.value = 'Hepsi'; });
     const sort = document.querySelector('#listingSort'); if (sort) sort.value = 'featured';
     renderPublicListings(); showToast('Filtreler temizlendi.');
   });
   renderPublicListings();
 }
 initPublicListingPage();
+
+document.querySelector('#toggleListView')?.addEventListener('click', () => {
+  const grid = document.querySelector('#dynamicPropertyGrid');
+  if (!grid) return;
+  grid.classList.toggle('list-view');
+  document.querySelector('#toggleListView').textContent = grid.classList.contains('list-view') ? 'Grid görünüm' : 'Liste görünümü';
+});
+
 
 
 // Portfolio form option picker modal
@@ -1107,3 +1128,20 @@ function renderLifecycle(status) {
   list.innerHTML = items.length ? items.map(([st,title,price,meta]) => `<article class="manager-item"><div><strong>${escapeHtml(title)}</strong><span>${escapeHtml(price)} · ${escapeHtml(meta)}</span></div><span class="status-pill">${escapeHtml(st)}</span></article>`).join('') : '<p class="muted">Bu statüde ilan yok.</p>';
 }
 renderPortalBenchmarkPanels();
+
+
+// Public benchmark enhancements: AI search, find-for-me, detailed filters and list view
+const FIND_FOR_ME_KEY = 'konutta:findForMe';
+document.querySelector('[data-ai-search]')?.addEventListener('submit', event => {
+  event.preventDefault();
+  const q = new FormData(event.currentTarget).get('q') || '';
+  location.href = 'ilanlar.html?q=' + encodeURIComponent(q) + '&sort=investment-score';
+});
+document.querySelector('#findForMeForm')?.addEventListener('submit', event => {
+  event.preventDefault();
+  const data = Object.fromEntries(new FormData(event.currentTarget));
+  const current = readJson(FIND_FOR_ME_KEY, []);
+  writeJson(FIND_FOR_ME_KEY, [{ id: Date.now(), ...data }, ...current].slice(0,20));
+  event.currentTarget.reset();
+  showToast('Arama talebin kaydedildi. Uygun portföy eşleştirme havuzuna düştü.');
+});
