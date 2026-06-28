@@ -885,3 +885,117 @@ function initPortfolioOptionPickers() {
   });
 }
 initPortfolioOptionPickers();
+
+
+// Portal competitor package: map view, search alerts, valuation and mortgage tools
+const SEARCH_ALERTS_KEY = 'konutta:searchAlerts';
+function formatTRY(value) {
+  return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(Number(value || 0));
+}
+function currentPortalFiltersSummary() {
+  const f = typeof collectListingFilters === 'function' ? collectListingFilters() : { q: document.querySelector('#listingSearch')?.value || '', type: document.querySelector('#listingType')?.value || 'Hepsi', location: document.querySelector('#listingLocation')?.value || 'Hepsi' };
+  return [f.type !== 'Hepsi' ? f.type : '', f.category !== 'Hepsi' ? f.category : '', f.location !== 'Hepsi' ? f.location : '', f.q || ''].filter(Boolean).join(' · ') || 'Tüm ilanlar';
+}
+function getMapCoords(item, index) {
+  const key = String(item.neighborhood || item.location || '').toLocaleLowerCase('tr-TR');
+  const coords = {
+    'akçay': [30, 56], 'altınkum': [38, 62], 'güre': [56, 46], 'zeytinli': [66, 34], 'ortaoba': [72, 58], 'mehmetalan': [78, 28], 'burhaniye': [24, 38], 'merkez': [24, 38], 'edremit': [48, 50]
+  };
+  const found = Object.entries(coords).find(([name]) => key.includes(name));
+  if (found) return found[1];
+  return [22 + (index * 17) % 66, 24 + (index * 23) % 58];
+}
+function getPortalMapItems() {
+  if (typeof PARLA_PROPERTIES === 'undefined') return [];
+  if (typeof filterPublicProperties === 'function' && document.querySelector('[data-listing-page]')) return filterPublicProperties();
+  const type = document.querySelector('#listingType')?.value || 'Hepsi';
+  const loc = document.querySelector('#listingLocation')?.value || 'Hepsi';
+  const q = (document.querySelector('#listingSearch')?.value || '').toLocaleLowerCase('tr-TR');
+  return PARLA_PROPERTIES.filter(item => {
+    const typeOk = type === 'Hepsi' || item.type === type;
+    const locOk = loc === 'Hepsi' || item.location.toLocaleLowerCase('tr-TR').includes(loc.toLocaleLowerCase('tr-TR'));
+    const text = [item.title,item.location,item.category,item.group,item.rooms,...(item.tags||[])].join(' ').toLocaleLowerCase('tr-TR');
+    return typeOk && locOk && (!q || text.includes(q));
+  });
+}
+function renderPortalMap() {
+  const map = document.querySelector('#mapPropertyPins');
+  const list = document.querySelector('#mapPropertyList');
+  if (!map || !list || typeof PARLA_PROPERTIES === 'undefined') return;
+  const items = getPortalMapItems();
+  map.innerHTML = items.map((item, index) => {
+    const [x,y] = getMapCoords(item, index);
+    return `<button class="map-pin" style="left:${x}%;top:${y}%" type="button" data-map-target="${escapeHtml(item.id)}">${escapeHtml(item.price)}</button>`;
+  }).join('');
+  list.innerHTML = items.map(item => `<article id="map-${escapeHtml(item.id)}"><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.location)} · ${escapeHtml(item.rooms)} · ${escapeHtml(item.sqm)}</span><a class="detail-link" href="${escapeHtml(item.url)}">Detayı gör →</a></article>`).join('') || '<article><strong>Sonuç yok</strong><span>Filtreleri genişletin veya talep bırakın.</span></article>';
+  map.querySelectorAll('[data-map-target]').forEach(btn => btn.addEventListener('click', () => document.querySelector(`#map-${CSS.escape(btn.dataset.mapTarget)}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })));
+}
+function renderSavedSearchAlerts() {
+  const target = document.querySelector('#savedSearchAlerts');
+  if (!target) return;
+  const alerts = readJson(SEARCH_ALERTS_KEY, []);
+  target.innerHTML = alerts.slice(0, 8).map(a => `<span>${escapeHtml(a.summary)}${a.name ? ' · ' + escapeHtml(a.name) : ''}</span>`).join('') || '<span>Henüz kayıtlı arama alarmı yok</span>';
+}
+function saveCurrentSearchAlert(extra = {}) {
+  const alerts = readJson(SEARCH_ALERTS_KEY, []);
+  const payload = { id: Date.now(), summary: currentPortalFiltersSummary(), name: extra.name || '', phone: extra.phone || '', createdAt: new Date().toISOString() };
+  writeJson(SEARCH_ALERTS_KEY, [payload, ...alerts].slice(0, 20));
+  renderSavedSearchAlerts();
+  showToast('Arama alarmı kaydedildi.');
+}
+function initPortalMapAndAlerts() {
+  document.querySelector('#toggleMapView')?.addEventListener('click', () => {
+    const panel = document.querySelector('#listingMapPanel');
+    if (!panel) return;
+    panel.hidden = !panel.hidden;
+    if (!panel.hidden) renderPortalMap();
+  });
+  document.querySelectorAll('#saveSearchAlert').forEach(btn => btn.addEventListener('click', () => saveCurrentSearchAlert()));
+  document.querySelector('#searchAlertForm')?.addEventListener('submit', event => {
+    event.preventDefault();
+    saveCurrentSearchAlert({ name: document.querySelector('#alertName')?.value || '', phone: document.querySelector('#alertPhone')?.value || '' });
+    event.currentTarget.reset();
+  });
+  ['#listingSearch','#listingType','#listingLocation','#listingCategory','#minPrice','#maxPrice','#minSqm','#maxSqm','#listingSort'].forEach(selector => {
+    document.querySelector(selector)?.addEventListener('input', renderPortalMap);
+    document.querySelector(selector)?.addEventListener('change', renderPortalMap);
+  });
+  if (document.querySelector('[data-portal-map-page]')) renderPortalMap();
+  renderSavedSearchAlerts();
+}
+function initValuationTool() {
+  const form = document.querySelector('#valuationForm');
+  if (!form) return;
+  const rates = { 'Akçay': 52000, 'Altınkum': 46500, 'Güre': 78000, 'Edremit': 43000, 'Burhaniye': 39000, 'Zeytinli': 31000 };
+  const catFactor = { 'Daire': 1, 'Villa': 1.55, 'Müstakil Ev': 1.25, 'Arsa': .48, 'Zeytinlik': .28, 'Ofis': .92 };
+  const calc = event => {
+    event?.preventDefault();
+    const loc = document.querySelector('#valuationLocation').value;
+    const cat = document.querySelector('#valuationCategory').value;
+    const sqm = parseNumber(document.querySelector('#valuationSqm').value) || 1;
+    const base = (rates[loc] || 42000) * (catFactor[cat] || 1) * sqm;
+    const low = base * .9, high = base * 1.12;
+    const target = document.querySelector('#valuationResult');
+    target.innerHTML = `<span class="eyebrow">Tahmini değer</span><span class="big-number">${formatTRY(base)}</span><p>${escapeHtml(loc)} / ${escapeHtml(cat)} için hızlı piyasa bandı. Net ekspertiz için yerinde inceleme gerekir.</p><div class="result-grid"><div><small>Alt bant</small><strong>${formatTRY(low)}</strong></div><div><small>Üst bant</small><strong>${formatTRY(high)}</strong></div><div><small>m² birim</small><strong>${formatTRY((rates[loc]||42000)*(catFactor[cat]||1))}</strong></div></div>`;
+  };
+  form.addEventListener('submit', calc); calc();
+}
+function initMortgageTool() {
+  const form = document.querySelector('#mortgageForm');
+  if (!form) return;
+  const calc = event => {
+    event?.preventDefault();
+    const price = parseNumber(document.querySelector('#homePrice').value);
+    const down = parseNumber(document.querySelector('#downPayment').value);
+    const principal = Math.max(price - down, 0);
+    const rate = Number(String(document.querySelector('#monthlyRate').value).replace(',', '.')) / 100;
+    const n = parseNumber(document.querySelector('#loanTerm').value) || 120;
+    const monthly = rate ? principal * (rate * Math.pow(1 + rate, n)) / (Math.pow(1 + rate, n) - 1) : principal / n;
+    const total = monthly * n;
+    document.querySelector('#mortgageResult').innerHTML = `<span class="eyebrow">Aylık taksit</span><span class="big-number">${formatTRY(monthly)}</span><p>${formatTRY(principal)} kredi tutarı için yaklaşık ödeme planı.</p><div class="result-grid"><div><small>Kredi</small><strong>${formatTRY(principal)}</strong></div><div><small>Toplam ödeme</small><strong>${formatTRY(total)}</strong></div><div><small>Faiz maliyeti</small><strong>${formatTRY(total - principal)}</strong></div></div>`;
+  };
+  form.addEventListener('submit', calc); calc();
+}
+initPortalMapAndAlerts();
+initValuationTool();
+initMortgageTool();
