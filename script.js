@@ -808,3 +808,80 @@ function initPublicListingPage() {
   renderPublicListings();
 }
 initPublicListingPage();
+
+
+// Portfolio form option picker modal
+function initPortfolioOptionPickers() {
+  const form = document.querySelector('#listingForm');
+  if (!form || document.querySelector('#optionPickerModal')) return;
+  const modal = document.createElement('div');
+  modal.id = 'optionPickerModal';
+  modal.className = 'option-modal';
+  modal.hidden = true;
+  modal.innerHTML = `
+    <div class="option-modal-backdrop" data-option-close></div>
+    <div class="option-modal-card" role="dialog" aria-modal="true" aria-labelledby="optionModalTitle">
+      <div class="option-modal-head"><div><span class="eyebrow">Portföy seçenekleri</span><h2 id="optionModalTitle">Seçenekler</h2><p id="optionModalHint">Uygun maddeleri işaretleyin; seçimler form özetine otomatik yansır.</p></div><button class="ghost-btn" type="button" data-option-close>Kapat</button></div>
+      <div class="option-modal-body" id="optionModalBody"></div>
+      <div class="option-modal-foot"><button class="primary-btn" type="button" data-option-close>Seçimleri kaydet</button></div>
+    </div>`;
+  document.body.appendChild(modal);
+  const body = modal.querySelector('#optionModalBody');
+  const title = modal.querySelector('#optionModalTitle');
+  let activeGrid = null;
+  let activeHome = null;
+
+  const updateSummary = section => {
+    const checked = [...section.querySelectorAll('input[type="checkbox"]:checked')].map(input => input.value);
+    const count = section.querySelector('[data-option-count]');
+    const chips = section.querySelector('[data-option-chips]');
+    if (count) count.textContent = checked.length ? `${checked.length} seçim` : 'Seçim yok';
+    if (chips) chips.innerHTML = checked.slice(0, 8).map(v => `<span>${escapeHtml(v)}</span>`).join('') || '<em>Henüz seçim yapılmadı</em>';
+  };
+
+  const closeModal = () => {
+    if (activeGrid && activeHome) {
+      activeGrid.classList.add('option-grid-collapsed');
+      activeHome.replaceWith(activeGrid);
+      const section = activeGrid.closest('.option-picker-section');
+      if (section) updateSummary(section);
+    }
+    activeGrid = null;
+    activeHome = null;
+    modal.hidden = true;
+    document.body.classList.remove('option-modal-open');
+    body.innerHTML = '';
+  };
+
+  modal.querySelectorAll('[data-option-close]').forEach(btn => btn.addEventListener('click', closeModal));
+  document.addEventListener('keydown', event => { if (!modal.hidden && event.key === 'Escape') closeModal(); });
+
+  form.querySelectorAll('.form-section.wide').forEach(section => {
+    const grid = section.querySelector(':scope > .checkbox-grid');
+    const heading = section.querySelector('h2');
+    if (!grid || !heading || section.dataset.optionPickerReady) return;
+    section.dataset.optionPickerReady = 'true';
+    section.classList.add('option-picker-section');
+    const total = grid.querySelectorAll('input[type="checkbox"]').length;
+    const panel = document.createElement('div');
+    panel.className = 'option-picker-summary';
+    panel.innerHTML = `<div><strong>${escapeHtml(heading.textContent.replace(/^\d+\.\s*/, ''))}</strong><small>${total} seçenek içinden seçim yapın</small><div class="option-picked-chips" data-option-chips><em>Henüz seçim yapılmadı</em></div></div><button class="ghost-btn" type="button" data-open-options>Seçenekleri aç</button><span class="option-count" data-option-count>Seçim yok</span>`;
+    section.insertBefore(panel, grid);
+    grid.classList.add('option-grid-collapsed');
+    grid.addEventListener('change', () => updateSummary(section));
+    panel.querySelector('[data-open-options]').addEventListener('click', () => {
+      activeGrid = grid;
+      activeHome = document.createComment('option-grid-home');
+      grid.replaceWith(activeHome);
+      body.innerHTML = '';
+      body.appendChild(grid);
+      grid.classList.remove('option-grid-collapsed');
+      title.textContent = heading.textContent;
+      modal.hidden = false;
+      document.body.classList.add('option-modal-open');
+      updateSummary(section);
+    });
+    updateSummary(section);
+  });
+}
+initPortfolioOptionPickers();

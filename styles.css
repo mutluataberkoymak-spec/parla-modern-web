@@ -514,3 +514,45 @@ main { width: min(1200px, calc(100% - 32px)); margin: 0 auto; }
   .portfolio-form .portfolio-form-actions .primary-btn,
   .portfolio-form .portfolio-form-actions .ghost-btn { width: 100%; justify-content: center; }
 }
+
+
+/* Portfolio option picker modal */
+.option-picker-section .option-grid-collapsed { display: none; }
+.option-picker-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 14px;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid rgba(29,78,216,.14);
+  border-radius: 20px;
+  background: linear-gradient(135deg, #fff, #eff6ff);
+}
+.option-picker-summary strong { display:block; color: var(--navy); font-size: 16px; }
+.option-picker-summary small { display:block; margin-top: 3px; color: var(--muted); font-weight: 750; }
+.option-count { padding: 8px 10px; border-radius: 999px; background: #dbeafe; color: var(--blue); font-weight: 900; font-size: 12px; white-space: nowrap; }
+.option-picked-chips { display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; min-height:24px; }
+.option-picked-chips span { padding: 6px 8px; border-radius: 999px; background: #fff; color: var(--blue); border: 1px solid rgba(29,78,216,.14); font-size: 12px; font-weight: 850; }
+.option-picked-chips em { color: var(--muted); font-size: 13px; }
+.option-modal[hidden] { display: none; }
+.option-modal { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 22px; }
+.option-modal-backdrop { position:absolute; inset:0; background: rgba(2,6,23,.62); backdrop-filter: blur(8px); }
+.option-modal-card { position: relative; width: min(980px, 100%); max-height: min(760px, calc(100vh - 44px)); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; overflow: hidden; border-radius: 30px; background: #fff; box-shadow: 0 30px 100px rgba(2,6,23,.35); }
+.option-modal-head, .option-modal-foot { padding: 18px 20px; border-bottom: 1px solid var(--line); background: linear-gradient(180deg, #fff, #f8fbff); }
+.option-modal-head { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; }
+.option-modal-head h2 { margin: 4px 0 6px; color: var(--navy); font-size: clamp(22px, 3vw, 34px); letter-spacing: -.04em; }
+.option-modal-head p { margin:0; color: var(--muted); line-height:1.55; }
+.option-modal-body { overflow:auto; padding: 20px; }
+.option-modal-body .checkbox-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.option-modal-body .checkbox-grid label { padding: 12px; border: 1px solid var(--line); border-radius: 16px; background: #f8fbff; align-items:center; }
+.option-modal-body .checkbox-grid label:has(input:checked) { border-color: rgba(29,78,216,.38); background: #eff6ff; color: var(--navy); }
+.option-modal-foot { border-top: 1px solid var(--line); border-bottom: 0; display:flex; justify-content:flex-end; }
+.option-modal-open { overflow: hidden; }
+@media(max-width: 760px) {
+  .option-picker-summary { grid-template-columns: 1fr; }
+  .option-picker-summary .ghost-btn, .option-count { justify-self:start; }
+  .option-modal { padding: 10px; }
+  .option-modal-card { border-radius: 22px; max-height: calc(100vh - 20px); }
+  .option-modal-head { flex-direction: column; }
+  .option-modal-body .checkbox-grid { grid-template-columns: 1fr; }
+}
