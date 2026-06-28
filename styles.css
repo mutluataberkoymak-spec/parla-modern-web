@@ -620,3 +620,34 @@ main { width: min(1200px, calc(100% - 32px)); margin: 0 auto; }
 .seo-content-grid { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
 .related-searches { display:grid; gap:14px; }
 @media(max-width:980px){ .portal-command-center,.portal-map-panel,.map-search-shell,.search-alert-panel,.calculator-shell,.seo-content-grid { grid-template-columns: 1fr; } .mini-lead-form { grid-template-columns: 1fr; } .portal-feature-grid { grid-template-columns: 1fr; } }
+
+
+/* Competitor benchmark admin panels */
+.portal-admin-grid { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+.portal-panel-shell { display: grid; gap: 18px; padding: 22px; border: 1px solid var(--line); border-radius: 30px; background: rgba(255,255,255,.82); box-shadow: 0 18px 60px rgba(15,23,42,.08); }
+.portal-panel-hero { display: grid; gap: 8px; padding: 22px; border-radius: 26px; background: linear-gradient(135deg, var(--navy), var(--blue)); color: #fff; }
+.portal-panel-hero .eyebrow { color: #9beafe; }
+.portal-panel-hero h2, .portal-panel-shell h2 { margin: 0; font-family: ui-serif, Georgia, "Times New Roman", serif; font-size: clamp(30px, 4vw, 48px); letter-spacing: -.05em; line-height: 1; }
+.portal-panel-hero p, .portal-panel-shell p { color: var(--muted); line-height: 1.65; }
+.portal-panel-hero p { color: rgba(255,255,255,.76); }
+.portal-metric-grid, .report-grid, .package-grid, .crm-grid, .sharing-grid, .valuation-report-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.portal-metric, .portal-card, .crm-card, .package-card, .report-card, .sharing-card, .valuation-card, .profile-score-card { padding: 18px; border: 1px solid var(--line); border-radius: 22px; background: #fff; box-shadow: 0 12px 38px rgba(15,23,42,.06); }
+.portal-metric span, .portal-card small, .crm-card span, .package-card span, .report-card span, .sharing-card span, .valuation-card span { display: block; color: var(--muted); font-size: 12px; font-weight: 850; text-transform: uppercase; letter-spacing: .06em; }
+.portal-metric strong { display: block; margin: 8px 0 4px; font-size: 34px; letter-spacing: -.06em; color: var(--navy); }
+.portal-metric em { color: var(--blue); font-style: normal; font-weight: 900; }
+.portal-two-col, .message-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.portal-card h3, .crm-card h3, .package-card h3, .report-card h3, .sharing-card h3, .valuation-card h3 { margin: 0 0 10px; letter-spacing: -.04em; }
+.mini-bar { height: 9px; border-radius: 999px; background: #e2e8f0; overflow: hidden; margin: 8px 0; }
+.mini-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(135deg, var(--blue), var(--cyan)); }
+.lifecycle-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.lifecycle-tabs button { border: 1px solid var(--line); border-radius: 999px; padding: 10px 14px; background: #fff; font-weight: 900; }
+.lifecycle-tabs button.active { background: var(--navy); color: #fff; }
+.kpi-table { display: grid; gap: 8px; }
+.kpi-row { display: flex; justify-content: space-between; gap: 10px; padding: 10px 12px; border-radius: 14px; background: #f8fbff; }
+.kpi-row strong { color: var(--navy); }
+.status-pill { display: inline-flex; align-items: center; border-radius: 999px; padding: 5px 9px; background: var(--soft); color: var(--blue); font-size: 12px; font-weight: 900; }
+.profile-score-card { display: grid; grid-template-columns: 180px 1fr; gap: 18px; align-items: center; }
+.score-ring { width: 150px; height: 150px; border-radius: 50%; display: grid; place-items: center; background: conic-gradient(var(--blue) 0 78%, #e2e8f0 78% 100%); color: var(--navy); font-size: 34px; font-weight: 950; box-shadow: inset 0 0 0 14px #fff; }
+.check-chip-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.check-chip-list span { padding: 8px 10px; border-radius: 999px; background: var(--soft); color: var(--blue); font-weight: 850; font-size: 12px; }
+@media(max-width:980px){ .portal-metric-grid,.report-grid,.package-grid,.crm-grid,.sharing-grid,.valuation-report-grid,.portal-two-col,.message-layout,.profile-score-card { grid-template-columns: 1fr; } }

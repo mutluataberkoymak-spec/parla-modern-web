@@ -314,7 +314,7 @@ function renderRolePanels() {
   if (authHero) authHero.hidden = !!session;
   if (adminPanel) adminPanel.hidden = !(session?.role === 'admin');
   if (userPanel) userPanel.hidden = !(session?.role === 'member');
-  if (session?.role === 'admin') showAdminSection('portfolioFormPanel', false);
+  if (session?.role === 'admin') showAdminSection('portalDashboardPanel', false);
   renderFavoritesList();
   renderAppointments();
 }
@@ -999,3 +999,111 @@ function initMortgageTool() {
 initPortalMapAndAlerts();
 initValuationTool();
 initMortgageTool();
+
+
+// Competitor benchmark admin panels: Sahibinden + Emlakjet + Hepsiemlak inspired modules
+const portalDemo = {
+  metrics: [
+    ['Ziyaret / 24s', '555', '+12%', 'Sahibinden tarzı saatlik ziyaret'],
+    ['Görüntülenme', '3.012', '+7%', 'Emlakjet toplam görüntülenme'],
+    ['Yayındaki ilan', '45', '+9%', 'Hepsiemlak aktif portföy'],
+    ['Favoriye alınma', '17', '+20%', 'Favori performansı'],
+    ['Mesaj', '4', '+0%', 'İlan mesajları'],
+    ['WhatsApp', '8', '+167%', 'WhatsApp etkileşimi'],
+    ['Telefon gösterimi', '12', '+31%', 'Telefon/arama metriği'],
+    ['Profil skoru', '78%', '+18%', 'Danışman/ofis tamamlama']
+  ],
+  listings: [
+    ['Aktif', 'ALTINKUM DENİZE 150M 2+1 DAİRE', '4.750.000 TL', '1.214 görüntülenme · 12 favori'],
+    ['Aktif', 'GÜRE HAVUZLU 3+1 VİLLA', '36.000.000 TL', '842 görüntülenme · 7 favori'],
+    ['Pasif', 'EDREMİT 3+1 KİRALIK DAİRE', '20.000 TL', 'Son yayın: 16.06.2026'],
+    ['Taslak', 'ZEYTİNLİ ARSA TASLAĞI', 'Fiyat bekliyor', 'Fotoğraf eksik'],
+    ['Süresi Dolan', 'BURHANİYE MÜSTAKİL EV', '17.500.000 TL', 'Yenileme önerilir'],
+    ['Silinen', 'ESKİ OFİS İLANI', 'Arşiv', 'Geri yüklenebilir demo']
+  ],
+  crm: [
+    ['Rehber', '128 kişi', 'Alıcı, satıcı, mülk sahibi ve yatırımcı kayıtları'],
+    ['Talepler', '24 aktif talep', 'Fiyat aralığı, lokasyon, tür ve uygun ilan eşleştirme'],
+    ['Yer Gösterme', '9 planlı gösterim', 'Müşteri, ilan, izlenim ve not takibi'],
+    ['Sözleşmeler', '6 taslak', 'Kiralama/satış aracılık sözleşmesi ve belge arşivi']
+  ],
+  messages: [
+    ['Mesaj', 'Altınkum 2+1 için konum sorusu', 'Yeni'],
+    ['WhatsApp', 'Güre villa için randevu talebi', 'Yanıt bekliyor'],
+    ['Arama', 'Mobil arama: Zeytinli arsa', 'Tamamlandı'],
+    ['Bildirim', 'Paket yenileme ve vitrin hakkı uyarısı', 'Okunmadı']
+  ],
+  reports: [
+    ['Yayındaki ilan raporu', '45 ilan', '7/14/30/90 gün kırılımı'],
+    ['Görüntülenme raporu', '3.012 görüntülenme', 'İlana ve danışmana göre'],
+    ['Mesaj raporu', '4 mesaj', 'Kanal bazlı yanıt takibi'],
+    ['Favori raporu', '17 favori', 'İlan performans sinyali'],
+    ['Arama raporu', '12 telefon', 'Mobil arama ve telefon gösterimi'],
+    ['Doping/Turbo raporu', '43 kullanım', 'Paket hakkı tüketimi'],
+    ['Paket raporu', '55 kalan ilan', 'Excel aktarım taslağı'],
+    ['Mülk sahibi raporu', 'Paylaşılabilir link', 'İlan sahibine performans özeti']
+  ],
+  packages: [
+    ['İlan hakkı', '100 toplam · 55 kalan', 45],
+    ['Vitrin hakkı', '12 toplam · 8 kalan', 33],
+    ['Turbo / Doping', '127 toplam · 84 kalan', 34],
+    ['İlanım güncel', '108 toplam · 83 kalan', 23],
+    ['Danışman hakkı', '5 toplam · 5 kalan', 0],
+    ['Değerleme hakkı', '3 rapor · 3 kalan', 0]
+  ],
+  sharing: [
+    ['İlan Havuzu', 'Paylaşıma açık portföyleri keşfet', 'Görüntüle'],
+    ['Gelen Talepler', 'Diğer ofislerden gelen paylaşım talepleri', '3 yeni'],
+    ['Giden Talepler', 'Paylaşım istediğin portföyler', '5 takipte'],
+    ['Kontrollü Paylaşım', 'Sadece seçilen profesyonellere özel ilan', 'Kapalı ağ']
+  ],
+  valuations: [
+    ['Altınkum 2+1 Daire', 'Tahmini 5.72M TL', 'Emsal ve m² bandı hazır'],
+    ['Güre Villa', 'Tahmini 35.4M TL', 'Lüks segment karşılaştırma'],
+    ['Zeytinli Arsa', 'Tahmini 29.1M TL', 'İmar ve lokasyon etkisi'],
+    ['Akçay Ofis', 'Kira bandı hazır', 'Ticari değerleme']
+  ]
+};
+
+function renderPortalBenchmarkPanels() {
+  const metricTarget = document.querySelector('#portalMetricsGrid');
+  if (metricTarget) metricTarget.innerHTML = portalDemo.metrics.map(([label,value,delta,hint]) => `<div class="portal-metric"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong><em>${escapeHtml(delta)}</em><small>${escapeHtml(hint)}</small></div>`).join('');
+  const topVisits = document.querySelector('#topListingVisits');
+  if (topVisits) topVisits.innerHTML = `<div class="kpi-table">${portalDemo.listings.slice(0,3).map((l,i)=>`<div class="kpi-row"><span>${i+1}. ${escapeHtml(l[1])}</span><strong>${i===0?'106':i===1?'80':'73'}</strong></div>`).join('')}</div>`;
+  const quota = document.querySelector('#packageQuotaSummary');
+  if (quota) quota.innerHTML = `<div class="kpi-table">${portalDemo.packages.slice(0,4).map(([name,text,used])=>`<div><div class="kpi-row"><span>${escapeHtml(name)}</span><strong>${escapeHtml(text)}</strong></div><div class="mini-bar"><i style="width:${used}%"></i></div></div>`).join('')}</div>`;
+  renderLifecycle('Aktif');
+  const tabs = document.querySelector('#lifecycleTabs');
+  if (tabs && !tabs.dataset.ready) {
+    tabs.dataset.ready = 'true';
+    const statuses = ['Aktif','Pasif','Taslak','Süresi Dolan','Silinen'];
+    tabs.innerHTML = statuses.map(st => `<button type="button" data-life-status="${escapeHtml(st)}">${escapeHtml(st)} <span>${portalDemo.listings.filter(x=>x[0]===st).length}</span></button>`).join('');
+    tabs.addEventListener('click', e => { if (e.target?.dataset?.lifeStatus) renderLifecycle(e.target.dataset.lifeStatus); });
+  }
+  const crm = document.querySelector('#crmCards');
+  if (crm) crm.innerHTML = portalDemo.crm.map(([h,n,p])=>`<article class="crm-card"><span>${escapeHtml(n)}</span><h3>${escapeHtml(h)}</h3><p>${escapeHtml(p)}</p><button class="ghost-btn" type="button">Demo aç</button></article>`).join('');
+  const inbox = document.querySelector('#messageInbox');
+  if (inbox) inbox.innerHTML = portalDemo.messages.map(([type,title,status])=>`<article class="manager-item"><div><strong>${escapeHtml(title)}</strong><span>${escapeHtml(type)}</span></div><span class="status-pill">${escapeHtml(status)}</span></article>`).join('');
+  const feed = document.querySelector('#notificationFeed');
+  if (feed) feed.innerHTML = `<h3>Bildirimler</h3><div class="kpi-table"><div class="kpi-row"><span>Paket yenileme</span><strong>22 gün</strong></div><div class="kpi-row"><span>Profil eksikleri</span><strong>5 alan</strong></div><div class="kpi-row"><span>Yeni talep</span><strong>3</strong></div></div>`;
+  const reports = document.querySelector('#reportCards');
+  if (reports) reports.innerHTML = portalDemo.reports.map(([h,n,p])=>`<article class="report-card"><span>${escapeHtml(n)}</span><h3>${escapeHtml(h)}</h3><p>${escapeHtml(p)}</p></article>`).join('');
+  const comp = document.querySelector('#competitionReport');
+  if (comp) comp.innerHTML = `<div class="kpi-table"><div class="kpi-row"><span>Ofisim ilan başına görüntülenme</span><strong>5.4</strong></div><div class="kpi-row"><span>Bölge ortalaması</span><strong>9.5</strong></div><div class="mini-bar"><i style="width:57%"></i></div><p>Hepsiemlak rekabet raporu mantığı: bölge ortalamasının altındaki ilanlara vitrin/turbo/güncelleme önerilir.</p></div>`;
+  const packages = document.querySelector('#boostPackageCards');
+  if (packages) packages.innerHTML = portalDemo.packages.map(([h,n,used])=>`<article class="package-card"><span>${escapeHtml(n)}</span><h3>${escapeHtml(h)}</h3><div class="mini-bar"><i style="width:${used}%"></i></div><button class="ghost-btn" type="button">Planla</button></article>`).join('');
+  const sharing = document.querySelector('#sharingNetworkCards');
+  if (sharing) sharing.innerHTML = portalDemo.sharing.map(([h,p,n])=>`<article class="sharing-card"><span>${escapeHtml(n)}</span><h3>${escapeHtml(h)}</h3><p>${escapeHtml(p)}</p></article>`).join('');
+  const profile = document.querySelector('#profileCompletionCard');
+  if (profile) profile.innerHTML = `<div class="score-ring">78%</div><div><h3>Profil tamamlanma skoru</h3><p>Eksik alanlar tamamlandıkça danışman ve ofis sayfası güçlenir.</p><div class="check-chip-list"><span>Logo var</span><span>Ofis adresi var</span><span>Yetki belgesi eklenecek</span><span>Sosyal medya eksik</span><span>Hakkımızda geliştirilecek</span><span>Hizmet dilleri eksik</span></div></div>`;
+  const vals = document.querySelector('#valuationReportCards');
+  if (vals) vals.innerHTML = portalDemo.valuations.map(([h,n,p])=>`<article class="valuation-card"><span>${escapeHtml(n)}</span><h3>${escapeHtml(h)}</h3><p>${escapeHtml(p)}</p><a class="detail-link" href="emlak-degerleme.html">Değerleme aracına git →</a></article>`).join('');
+}
+function renderLifecycle(status) {
+  const list = document.querySelector('#lifecycleList');
+  if (!list) return;
+  document.querySelectorAll('[data-life-status]').forEach(btn => btn.classList.toggle('active', btn.dataset.lifeStatus === status));
+  const items = portalDemo.listings.filter(x => x[0] === status);
+  list.innerHTML = items.length ? items.map(([st,title,price,meta]) => `<article class="manager-item"><div><strong>${escapeHtml(title)}</strong><span>${escapeHtml(price)} · ${escapeHtml(meta)}</span></div><span class="status-pill">${escapeHtml(st)}</span></article>`).join('') : '<p class="muted">Bu statüde ilan yok.</p>';
+}
+renderPortalBenchmarkPanels();
