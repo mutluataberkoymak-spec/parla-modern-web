@@ -104,7 +104,7 @@ photoInput?.addEventListener('change', event => {
 function buildPortfolioData(form) {
   const fd = new FormData(form);
   const get = name => String(fd.get(name) || '').trim();
-  const title = get('title') || `${get('district') || 'Akçay'} ${get('rooms') || ''} ${get('housingType') || 'Portföy'}`.trim() || 'Yeni Parla Portföyü';
+  const title = get('title') || `${get('district') || 'Akçay'} ${get('rooms') || ''} ${get('housingType') || 'Portföy'}`.trim() || 'Yeni Konutta.com Portföyü';
   const category = get('category') || getCheckedValues(form, 'housingType')[0] || 'Konut';
   const type = get('type') || 'Satılık';
   const location = [get('city'), get('district'), get('neighborhood')].filter(Boolean).join(' / ') || 'Balıkesir / Edremit / Akçay';
@@ -123,8 +123,8 @@ function buildPortfolioData(form) {
     openAreaSqm: get('openAreaSqm'),
     titleDeedStatus: get('titleDeedStatus'),
     propertyNumber: get('propertyNumber'),
-    description: get('description') || 'Parla Gayrimenkul güvencesiyle detaylı portföy formundan oluşturulan yeni portföy.',
-    advisor: get('consultantName') || get('advisor') || 'Parla Ofis Ekibi',
+    description: get('description') || 'Konutta.com güvencesiyle detaylı portföy formundan oluşturulan yeni portföy.',
+    advisor: get('consultantName') || get('advisor') || 'Konutta.com Ofis Ekibi',
     phone: get('consultantPhone'),
     photos: selectedPhotos.map(file => ({ name: file.name, url: URL.createObjectURL(file) })),
     features: {
@@ -225,8 +225,8 @@ document.querySelector('#fillPortfolioSampleBtn')?.addEventListener('click', () 
   set('parcelNo', '45');
   set('titleDeedStatus', 'Kat Mülkiyeti');
   set('propertyNumber', '70596688');
-  set('description', 'Parla Gayrimenkul güvencesiyle; denize yakın, geniş açık alanlı, modern kullanıma sahip, krediye uygun ve yatırım değeri yüksek özel portföy. Detaylı bilgi ve yer gösterimi için danışmanımızla iletişime geçebilirsiniz.');
-  set('officeName', 'Parla Gayrimenkul');
+  set('description', 'Konutta.com güvencesiyle; denize yakın, geniş açık alanlı, modern kullanıma sahip, krediye uygun ve yatırım değeri yüksek özel portföy. Detaylı bilgi ve yer gösterimi için danışmanımızla iletişime geçebilirsiniz.');
+  set('officeName', 'Konutta.com');
   set('consultantName', 'Açane Saydıran');
   set('consultantEmail', 'ornek@mail.com');
   set('authorizationNo', '1001719');
@@ -244,7 +244,7 @@ const DEMO_USERS_KEY = 'parla:users';
 const DEMO_SESSION_KEY = 'parla:session';
 const DEMO_FAVORITES_KEY = 'parla:favorites';
 const DEMO_APPOINTMENTS_KEY = 'parla:appointments';
-const DEFAULT_ADMIN = { username: 'admin', password: '123', role: 'admin', fullName: 'Parla Yönetici' };
+const DEFAULT_ADMIN = { username: 'admin', password: '123', role: 'admin', fullName: 'Konutta.com Yönetici' };
 
 function readJson(key, fallback) {
   try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; }
@@ -503,8 +503,8 @@ document.querySelector('#sliderForm')?.addEventListener('submit', e => {
 });
 
 function getAgents() { return readJson('parla:agents', [
-  { id: 'agent-acane', name: 'Açane Saydıran', title: 'Portföy Danışmanı', phone: '0531 736 64 00', email: 'acane@parla.demo' },
-  { id: 'agent-office', name: 'Parla Ofis Ekibi', title: 'Kurumsal Danışmanlık', phone: '+90 5xx xxx xx xx', email: 'ofis@parla.demo' },
+  { id: 'agent-acane', name: 'Açane Saydıran', title: 'Portföy Danışmanı', phone: '0531 736 64 00', email: 'acane@konutta.demo' },
+  { id: 'agent-office', name: 'Konutta.com Ofis Ekibi', title: 'Kurumsal Danışmanlık', phone: '+90 5xx xxx xx xx', email: 'ofis@konutta.demo' },
 ]); }
 function saveAgents(items) { writeJson('parla:agents', items); }
 function renderAgents() {
@@ -581,7 +581,7 @@ const sahibindenSampleJson = {
     {
       ilan_no: '1234567890',
       sahibinden_url: 'https://www.sahibinden.com/ilan/emlak-konut-satilik-ornek-ilan-1234567890/detay',
-      baslik: "PARLA'DAN ALTINKUM'DA DENİZE YAKIN 2+1 DAİRE",
+      baslik: "KONUTTA.COM’DAN ALTINKUM'DA DENİZE YAKIN 2+1 DAİRE",
       islem_tipi: 'Satılık',
       kategori: 'Konut',
       alt_kategori: 'Daire',
@@ -597,7 +597,7 @@ const sahibindenSampleJson = {
       isitma: 'Doğalgaz Kombi',
       tapu_durumu: 'Kat Mülkiyeti',
       aciklama: 'Sahibinden JSON aktarımıyla Parla web sitesine eklenen örnek portföy.',
-      danisman: 'Parla Ofis Ekibi',
+      danisman: 'Konutta.com Ofis Ekibi',
       telefon: '+90 5xx xxx xx xx',
       fotograflar: ['https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80'],
       ozellikler: { ic: ['Çelik Kapı', 'Fiber İnternet'], dis: ['Açık Otopark'], muhit: ['Sahil', 'Market'], ulasim: ['Otobüs Durağı'], manzara: ['Şehir'] }
@@ -632,7 +632,7 @@ function normalizeSahibindenListings(raw) {
       titleDeedStatus: item.tapu_durumu || item.titleDeedStatus || '',
       propertyNumber: item.tasinmaz_no || item.tasinmaz_numarasi || item.propertyNumber || '',
       description: item.aciklama || item.description || 'Sahibinden JSON aktarımıyla oluşturulan portföy.',
-      advisor: item.danisman || item.advisor || 'Parla Ofis Ekibi',
+      advisor: item.danisman || item.advisor || 'Konutta.com Ofis Ekibi',
       phone: item.telefon || item.phone || '',
       photos: photos.map((url, photoIndex) => typeof url === 'string' ? { name: `sahibinden-${item.ilan_no || index}-${photoIndex + 1}`, url } : url),
       features: {

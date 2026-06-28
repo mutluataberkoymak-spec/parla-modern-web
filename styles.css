@@ -556,3 +556,17 @@ main { width: min(1200px, calc(100% - 32px)); margin: 0 auto; }
   .option-modal-head { flex-direction: column; }
   .option-modal-body .checkbox-grid { grid-template-columns: 1fr; }
 }
+
+
+/* Konutta.com premium round logo */
+.brand-logo-inline.konutta-logo {
+  width: 50px;
+  height: 50px;
+  flex: 0 0 50px;
+  border-radius: 999px;
+  box-shadow: 0 14px 34px rgba(2, 6, 23, .22), 0 0 0 6px rgba(255,255,255,.78);
+  background: #07142f;
+}
+.brand-logo-inline.konutta-logo svg { border-radius: 999px; }
+.brand strong { letter-spacing: -.045em; }
+@media(max-width:780px){ .brand-logo-inline.konutta-logo { width:42px; height:42px; flex-basis:42px; } }
