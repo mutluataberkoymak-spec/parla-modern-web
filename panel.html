@@ -1,0 +1,283 @@
+<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Portföy Formu — Parla Gayrimenkul</title><meta name="description" content="Parla Gayrimenkul detaylı portföy giriş formu."><link rel="preconnect" href="https://images.unsplash.com"><link rel="stylesheet" href="styles.css"></head><body><div class="announcement"><span>Akçay · Edremit · Körfez uzmanlığı</span><a href="tel:+905****0000">Hızlı arama</a><a href="panel.html">Ofis paneli</a></div>
+<header class="site-header">
+  <a class="brand" href="index.html" aria-label="Parla Gayrimenkul"><span class="brand-logo-inline" aria-hidden="true"><svg viewBox="0 0 64 64"><defs><linearGradient id="pbg" x1="8" y1="4" x2="58" y2="60"><stop stop-color="#0B1B3A"/><stop offset=".58" stop-color="#1D4ED8"/><stop offset="1" stop-color="#0284C7"/></linearGradient></defs><rect x="4" y="4" width="56" height="56" rx="17" fill="url(#pbg)"/><path d="M17 31L32 18l15 13" fill="none" stroke="#EFFFFF" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M23 47V28h11.5c7 0 11.5 4 11.5 9.4S41.5 47 34.5 47H30" fill="none" stroke="#EFFFFF" stroke-width="5.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M30 37h5" stroke="#22D3EE" stroke-width="4.4" stroke-linecap="round"/><path d="M15 51c5-3 11-3 17 0s12 3 17 0" fill="none" stroke="#22D3EE" stroke-width="3.3" stroke-linecap="round"/></svg></span><span><strong>Parla Gayrimenkul</strong><small>Emlak Yönetimi ve Danışmanlık</small></span></a>
+  <nav class="main-nav" id="mainNav" aria-label="Ana menü"><a class="" href="index.html">Anasayfa</a><a class="" href="gayrimenkuller.html">Gayrimenkuller</a><a class="" href="hakkimizda.html">Hakkımızda</a><a class="" href="ofisler.html">Ofislerimiz</a><a class="" href="danismanlar.html">Danışmanlar</a><a class="" href="hizmetler.html">Hizmetler</a><a class="" href="iletisim.html">İletişim</a></nav>
+  <div class="header-actions"><a class="ghost-btn" href="gayrimenkuller.html">Portföy ara</a><a class="primary-btn" href="iletisim.html">Talep gönder</a><button class="menu-btn" id="menuBtn" aria-label="Menüyü aç">☰</button></div>
+</header><main>
+<section class="auth-hero" id="authHero">
+  <div class="auth-copy">
+    <span class="eyebrow">Parla Dijital Panel</span>
+    <h1>Giriş yap, rolüne göre doğru panele geç.</h1>
+    <p>Yönetici portföy, içerik ve tema yönetebilir. Üyeler randevu oluşturabilir ve portföyleri favorilerine ekleyebilir.</p>
+    <div class="auth-badges"><span>Admin: admin / 123</span><span>Üye paneli</span><span>Mobil uyumlu</span></div>
+  </div>
+  <div class="auth-card">
+    <div class="auth-tabs"><button class="active" type="button" data-auth-tab="login">Giriş</button><button type="button" data-auth-tab="register">Üye Ol</button></div>
+    <form id="loginForm" class="auth-form">
+      <label><span>Kullanıcı adı</span><input name="username" autocomplete="username" placeholder="admin veya üye adınız" required></label>
+      <label><span>Şifre</span><input name="password" type="password" autocomplete="current-password" placeholder="Admin için 123" required></label>
+      <button class="primary-btn" type="submit">Panele gir</button>
+      <small>Demo sistemdir; bilgiler tarayıcı içinde saklanır.</small>
+    </form>
+    <form id="registerForm" class="auth-form" hidden>
+      <label><span>Ad Soyad</span><input name="fullName" placeholder="Adınız Soyadınız" required></label>
+      <label><span>Kullanıcı adı</span><input name="username" autocomplete="username" placeholder="ornek: mutlu" required></label>
+      <label><span>Telefon</span><input name="phone" placeholder="05xx xxx xx xx"></label>
+      <label><span>Şifre</span><input name="password" type="password" autocomplete="new-password" placeholder="Şifreniz" required></label>
+      <button class="primary-btn" type="submit">Üyeliği oluştur</button>
+      <small>Üye hesabı sadece randevu ve favori işlemleri içindir.</small>
+    </form>
+  </div>
+</section>
+
+<section class="role-panel" id="adminPanel" hidden>
+  <div class="panel-head">
+    <div><span class="eyebrow">Yönetici Paneli</span><h1>Site, tema ve portföy yönetimi</h1><p>Portföy ekleme ekranı artık doğrudan açılmaz; yönetici girişinden sonra bu paneldeki butonla açılır.</p></div>
+    <button class="ghost-btn" type="button" data-logout>Çıkış yap</button>
+  </div>
+  <div class="admin-grid">
+    <button class="admin-tile" type="button" data-admin-section="portfolioFormPanel"><strong>Portföy Ekle</strong><span>Detaylı portföy formunu aç</span></button>
+    <button class="admin-tile" type="button" data-admin-section="siteContentPanel"><strong>Site İçeriği</strong><span>Başlık, slogan ve iletişim metinleri</span></button>
+    <button class="admin-tile" type="button" data-admin-section="themePanel"><strong>Tema Ayarları</strong><span>Renk, vurgu ve görsel ton</span></button>
+    <button class="admin-tile" type="button" data-admin-section="appointmentsAdminPanel"><strong>Randevular</strong><span>Üyelerden gelen randevu talepleri</span></button>
+    <button class="admin-tile" type="button" data-admin-section="portfolioManagerPanel"><strong>Portföy Yönetimi</strong><span>Oluşan portföyleri düzenle veya sil</span></button>
+    <button class="admin-tile" type="button" data-admin-section="sliderPanel"><strong>Slider / Vitrin</strong><span>Ana görsel ve vitrin içerikleri</span></button>
+    <button class="admin-tile" type="button" data-admin-section="agentsPanel"><strong>Danışmanlar</strong><span>Danışman ekle ve düzenle</span></button>
+    <button class="admin-tile" type="button" data-admin-section="officePanel"><strong>Ofis Bilgileri</strong><span>Adres, telefon ve çalışma saatleri</span></button>
+    <button class="admin-tile" type="button" data-admin-section="membersPanel"><strong>Üyeler</strong><span>Kayıtlı kullanıcıları görüntüle</span></button>
+    <button class="admin-tile" type="button" data-admin-section="sahibindenImportPanel"><strong>Sahibinden JSON Aktar</strong><span>Sahibinden portföylerini JSON dosyasından içe al</span></button>
+  </div>
+  <section class="admin-section" id="portfolioFormPanel" hidden>
+    <section class="portfolio-form-hero admin-only-form-head">
+  <div><span class="eyebrow">Parla Gayrimenkul</span><h1>Portföy Formu</h1><p>Görseldeki fiziksel portföy formundaki alanların tamamı dijitalleştirildi. Bilgileri ve fotoğrafları girdikten sonra portföy kartı otomatik oluşur.</p></div>
+  <div class="form-top-meta">
+    <label class=""><span>Tarih</span><input name="formDate" type="date" placeholder="gg / aa / yyyy"></label>
+    <label class=""><span>Danışman</span><select name="advisor"><option value="">Seçiniz</option><option>Açane Saydıran</option><option>Mutlu Ataberk Oymak</option><option>Parla Ofis Ekibi</option></select></label>
+    <label class=""><span>Portföy No</span><input name="portfolioNo" type="text" placeholder="Örn: PRL-0001"></label>
+    <label class=""><span>İlan No</span><input name="listingNo" type="text" placeholder="Örn: 1234567890"></label>
+  </div>
+</section>
+
+<section class="portfolio-form-shell">
+<form id="listingForm" class="portfolio-form">
+  <section class="form-section wide"><h2>1. Detaylı Bilgiler</h2><div class="form-grid four">
+    <label class=""><span>Fiyat</span><input name="price" type="text" placeholder="Örn: 15.999.000"></label>
+    <label class=""><span>m² (Brüt)</span><input name="grossSqm" type="text" placeholder="Örn: 351"></label>
+    <label class=""><span>m² (Net)</span><input name="netSqm" type="text" placeholder="Örn: 225"></label>
+    <label class=""><span>Açık Alan m²</span><input name="openAreaSqm" type="text" placeholder="Örn: 261"></label>
+    <label class=""><span>Oda Sayısı</span><input name="rooms" type="text" placeholder="Örn: 3+1"></label>
+    <label class=""><span>Bina Yaşı</span><input name="buildingAge" type="text" placeholder="Örn: 2"></label>
+    <label class=""><span>Kat Sayısı</span><input name="floorCount" type="text" placeholder="Örn: 3"></label>
+    <label class=""><span>Bulunduğu Kat</span><input name="floor" type="text" placeholder="Örn: 1"></label>
+    <label class=""><span>Isıtma</span><select name="heating"><option value="">Seçiniz</option><option>Doğalgaz Kombi</option><option>Merkezi</option><option>Klima</option><option>Soba</option><option>Yok</option></select></label>
+    <label class=""><span>Banyo Sayısı</span><input name="bathrooms" type="text" placeholder="Örn: 2"></label>
+    <label class=""><span>Mutfak</span><select name="kitchen"><option value="">Seçiniz</option><option>Açık</option><option>Kapalı</option><option>Amerikan</option><option>Ankastre</option></select></label>
+    <label class=""><span>Otopark</span><select name="parking"><option value="">Seçiniz</option><option>Açık Otopark</option><option>Kapalı Otopark</option><option>Açık + Kapalı</option><option>Yok</option></select></label>
+    <div class="choice-row"><strong>Eşyalı</strong><label><input type="radio" name="furnished" value="Evet"> Evet</label><label><input type="radio" name="furnished" value="Hayır"> Hayır</label></div>
+    <label class=""><span>Kullanım Durumu</span><select name="usageStatus"><option value="">Seçiniz</option><option>Boş</option><option>Kiracılı</option><option>Mülk Sahibi Oturuyor</option></select></label>
+    <label class=""><span>Aidat (TL)</span><input name="dues" type="text" placeholder="Örn: 750"></label>
+    <div class="choice-row"><strong>Krediye Uygun</strong><label><input type="radio" name="creditEligible" value="Evet"> Evet</label><label><input type="radio" name="creditEligible" value="Hayır"> Hayır</label></div>
+    <label class=""><span>Enerji Kimlik Belgesi</span><input name="energyCertificate" type="text" placeholder="Var / Yok"></label>
+    <label class=""><span>Gayrimenkul Sahibi</span><select name="ownerType"><option value="">Seçiniz</option><option>Mülk Sahibi</option><option>Vekil</option><option>Şirket</option></select></label>
+    <label class=""><span>Tapu Durumu</span><select name="titleDeedStatus"><option value="">Seçiniz</option><option>Kat Mülkiyeti</option><option>Kat İrtifakı</option><option>Müstakil Tapu</option><option>Hisseli</option></select></label>
+    <label class=""><span>Taşınmaz Numarası</span><input name="propertyNumber" type="text" placeholder="Örn: 70596688"></label>
+    <label class=""><span>Kimden</span><select name="fromWhom"><option value="">Seçiniz</option><option>Emlak Ofisinden</option><option>Sahibinden</option><option>İnşaat Firmasından</option></select></label>
+    <div class="choice-row"><strong>Takaslı</strong><label><input type="radio" name="barter" value="Evet"> Evet</label><label><input type="radio" name="barter" value="Hayır"> Hayır</label></div>
+    <label class=""><span>İlan Giriş Tarihi</span><input name="listingStartDate" type="date" placeholder="gg / aa / yyyy"></label>
+    <label class=""><span>İlan Bitiş Tarihi</span><input name="listingEndDate" type="date" placeholder="gg / aa / yyyy"></label>
+  </div></section>
+
+  <section class="form-section"><h2>2. Adres Bilgileri</h2><div class="form-grid two">
+    <label class=""><span>İl</span><select name="city"><option value="">Seçiniz</option><option>Balıkesir</option></select></label>
+    <label class=""><span>İlçe</span><select name="district"><option value="">Seçiniz</option><option>Edremit</option><option>Burhaniye</option><option>Havran</option><option>Ayvalık</option></select></label>
+    <label class=""><span>Mahalle</span><input name="neighborhood" type="text" placeholder="Mahalle yazınız"></label>
+    <label class=""><span>Cadde / Sokak</span><input name="street" type="text" placeholder="Cadde / Sokak yazınız"></label>
+    <label class=""><span>Bina No</span><input name="buildingNo" type="text" placeholder="Örn: 10"></label>
+    <label class=""><span>Daire No</span><input name="apartmentNo" type="text" placeholder="Örn: 5"></label>
+    <div class="choice-row full"><strong>Cephe(ler)</strong><label><input type="checkbox" name="fronts" value="Batı"> Batı</label><label><input type="checkbox" name="fronts" value="Doğu"> Doğu</label><label><input type="checkbox" name="fronts" value="Güney"> Güney</label><label><input type="checkbox" name="fronts" value="Kuzey"> Kuzey</label></div>
+  </div></section>
+
+  <section class="form-section"><h2>3. Tapu Bilgileri</h2><div class="form-grid two">
+    <label class=""><span>Ada</span><input name="blockNo" type="text" placeholder="Örn: 123"></label>
+    <label class=""><span>Parsel</span><input name="parcelNo" type="text" placeholder="Örn: 45"></label>
+    <label class=""><span>Pafta</span><input name="sheetNo" type="text" placeholder="Örn: H22D25"></label>
+    <label class=""><span>Yüzölçümü (m²)</span><input name="deedArea" type="text" placeholder="Örn: 351"></label>
+    <div class="choice-row full"><strong>Tapu Durumu</strong><label><input type="checkbox" name="deedType" value="Kat Mülkiyeti"> Kat Mülkiyeti</label><label><input type="checkbox" name="deedType" value="Kat İrtifakı"> Kat İrtifakı</label><label><input type="checkbox" name="deedType" value="Müstakil Tapu"> Müstakil Tapu</label></div>
+    <label class=""><span>Arsa Payı</span><input name="landShare" type="text" placeholder="Örn: 12/351"></label>
+    <label class=""><span>Cilt No</span><input name="volumeNo" type="text" placeholder="Örn: 1234"></label>
+    <label class=""><span>Sayfa No</span><input name="pageNo" type="text" placeholder="Örn: 56"></label>
+  </div></section>
+
+  <section class="form-section wide"><h2>4. İç Özellikler</h2><div class="checkbox-grid"><label><input type="checkbox" name="interiorFeatures" value="ADSL"> ADSL</label><label><input type="checkbox" name="interiorFeatures" value="Akıllı Ev"> Akıllı Ev</label><label><input type="checkbox" name="interiorFeatures" value="Alarm (Hırsız)"> Alarm (Hırsız)</label><label><input type="checkbox" name="interiorFeatures" value="Alarm (Yangın)"> Alarm (Yangın)</label><label><input type="checkbox" name="interiorFeatures" value="Ankastre Fırın"> Ankastre Fırın</label><label><input type="checkbox" name="interiorFeatures" value="Amerikan Kapı"> Amerikan Kapı</label><label><input type="checkbox" name="interiorFeatures" value="Ahşap Doğrama"> Ahşap Doğrama</label><label><input type="checkbox" name="interiorFeatures" value="Alüminyum Doğrama"> Alüminyum Doğrama</label><label><input type="checkbox" name="interiorFeatures" value="Asma Tavan"> Asma Tavan</label><label><input type="checkbox" name="interiorFeatures" value="Barbekü"> Barbekü</label><label><input type="checkbox" name="interiorFeatures" value="Boyalı"> Boyalı</label><label><input type="checkbox" name="interiorFeatures" value="Bulaşık Makinesi"> Bulaşık Makinesi</label><label><input type="checkbox" name="interiorFeatures" value="Buzdolabı"> Buzdolabı</label><label><input type="checkbox" name="interiorFeatures" value="Çamaşır Makinesi"> Çamaşır Makinesi</label><label><input type="checkbox" name="interiorFeatures" value="Çamaşır Odası"> Çamaşır Odası</label><label><input type="checkbox" name="interiorFeatures" value="Çelik Kapı"> Çelik Kapı</label><label><input type="checkbox" name="interiorFeatures" value="Duşakabin"> Duşakabin</label><label><input type="checkbox" name="interiorFeatures" value="Duvar Kağıdı"> Duvar Kağıdı</label><label><input type="checkbox" name="interiorFeatures" value="Ebeveyn Banyosu"> Ebeveyn Banyosu</label><label><input type="checkbox" name="interiorFeatures" value="Fiber İnternet"> Fiber İnternet</label><label><input type="checkbox" name="interiorFeatures" value="Fırın"> Fırın</label><label><input type="checkbox" name="interiorFeatures" value="Giyinme Odası"> Giyinme Odası</label><label><input type="checkbox" name="interiorFeatures" value="Gömme Dolap"> Gömme Dolap</label><label><input type="checkbox" name="interiorFeatures" value="Görüntülü Diyafon"> Görüntülü Diyafon</label><label><input type="checkbox" name="interiorFeatures" value="Hilton Banyo"> Hilton Banyo</label><label><input type="checkbox" name="interiorFeatures" value="Intercom Sistemi"> Intercom Sistemi</label><label><input type="checkbox" name="interiorFeatures" value="Isıcam"> Isıcam</label><label><input type="checkbox" name="interiorFeatures" value="Jakuzi"> Jakuzi</label><label><input type="checkbox" name="interiorFeatures" value="Kiler"> Kiler</label><label><input type="checkbox" name="interiorFeatures" value="Klima"> Klima</label><label><input type="checkbox" name="interiorFeatures" value="Kombi"> Kombi</label><label><input type="checkbox" name="interiorFeatures" value="Küvet"> Küvet</label><label><input type="checkbox" name="interiorFeatures" value="Laminant Zemin"> Laminant Zemin</label><label><input type="checkbox" name="interiorFeatures" value="Merkezi Uydu Sistemi"> Merkezi Uydu Sistemi</label><label><input type="checkbox" name="interiorFeatures" value="Mobilya"> Mobilya</label><label><input type="checkbox" name="interiorFeatures" value="Mutfak (Ankastre)"> Mutfak (Ankastre)</label><label><input type="checkbox" name="interiorFeatures" value="Mutfak (Laminat)"> Mutfak (Laminat)</label><label><input type="checkbox" name="interiorFeatures" value="Mutfak Doğalgazı"> Mutfak Doğalgazı</label><label><input type="checkbox" name="interiorFeatures" value="Panjur/Jaluzi"> Panjur/Jaluzi</label><label><input type="checkbox" name="interiorFeatures" value="Parke Zemin"> Parke Zemin</label><label><input type="checkbox" name="interiorFeatures" value="PVC Doğrama"> PVC Doğrama</label><label><input type="checkbox" name="interiorFeatures" value="Seramik Zemin"> Seramik Zemin</label><label><input type="checkbox" name="interiorFeatures" value="Set Üstü Ocak"> Set Üstü Ocak</label><label><input type="checkbox" name="interiorFeatures" value="Spot Aydınlatma"> Spot Aydınlatma</label><label><input type="checkbox" name="interiorFeatures" value="Şömine"> Şömine</label><label><input type="checkbox" name="interiorFeatures" value="Teras"> Teras</label><label><input type="checkbox" name="interiorFeatures" value="Termosifon"> Termosifon</label><label><input type="checkbox" name="interiorFeatures" value="Vestiyer"> Vestiyer</label><label><input type="checkbox" name="interiorFeatures" value="Yüz Tanıma & Parmak İzi"> Yüz Tanıma & Parmak İzi</label><label class="other-field"><span>Diğer</span><input name="interiorFeaturesOther" placeholder="Diğer özellik yazınız"></label></div></section>
+  <section class="form-section wide"><h2>5. Dış Özellikler</h2><div class="checkbox-grid"><label><input type="checkbox" name="exteriorFeatures" value="24 Saat Güvenlik"> 24 Saat Güvenlik</label><label><input type="checkbox" name="exteriorFeatures" value="Açık Otopark"> Açık Otopark</label><label><input type="checkbox" name="exteriorFeatures" value="Apartman Görevlisi"> Apartman Görevlisi</label><label><input type="checkbox" name="exteriorFeatures" value="Buhar Odası"> Buhar Odası</label><label><input type="checkbox" name="exteriorFeatures" value="Çocuk Oyun Parkı"> Çocuk Oyun Parkı</label><label><input type="checkbox" name="exteriorFeatures" value="Hamam"> Hamam</label><label><input type="checkbox" name="exteriorFeatures" value="Hidrofor"> Hidrofor</label><label><input type="checkbox" name="exteriorFeatures" value="Isı Yalıtımı"> Isı Yalıtımı</label><label><input type="checkbox" name="exteriorFeatures" value="Jeneratör"> Jeneratör</label><label><input type="checkbox" name="exteriorFeatures" value="Kapalı Otopark"> Kapalı Otopark</label><label><input type="checkbox" name="exteriorFeatures" value="Kamera Sistemi"> Kamera Sistemi</label><label><input type="checkbox" name="exteriorFeatures" value="Müstakil Havuzlu"> Müstakil Havuzlu</label><label><input type="checkbox" name="exteriorFeatures" value="Sauna"> Sauna</label><label><input type="checkbox" name="exteriorFeatures" value="Ses Yalıtımı"> Ses Yalıtımı</label><label><input type="checkbox" name="exteriorFeatures" value="Site İçinde"> Site İçinde</label><label><input type="checkbox" name="exteriorFeatures" value="Spor Alanı"> Spor Alanı</label><label><input type="checkbox" name="exteriorFeatures" value="Su Deposu"> Su Deposu</label><label><input type="checkbox" name="exteriorFeatures" value="Tenis Kortu"> Tenis Kortu</label><label><input type="checkbox" name="exteriorFeatures" value="Uydu"> Uydu</label><label><input type="checkbox" name="exteriorFeatures" value="Yüzme Havuzu (Açık)"> Yüzme Havuzu (Açık)</label><label><input type="checkbox" name="exteriorFeatures" value="Yüzme Havuzu (Kapalı)"> Yüzme Havuzu (Kapalı)</label><label class="other-field"><span>Diğer</span><input name="exteriorFeaturesOther" placeholder="Diğer özellik yazınız"></label></div></section>
+  <section class="form-section wide"><h2>6. Muhit Özellikleri</h2><div class="checkbox-grid"><label><input type="checkbox" name="neighborhoodFeatures" value="Alışveriş Merkezi"> Alışveriş Merkezi</label><label><input type="checkbox" name="neighborhoodFeatures" value="Belediye"> Belediye</label><label><input type="checkbox" name="neighborhoodFeatures" value="Cami"> Cami</label><label><input type="checkbox" name="neighborhoodFeatures" value="Cemevi"> Cemevi</label><label><input type="checkbox" name="neighborhoodFeatures" value="Denize Sıfır"> Denize Sıfır</label><label><input type="checkbox" name="neighborhoodFeatures" value="Eczane"> Eczane</label><label><input type="checkbox" name="neighborhoodFeatures" value="Eğlence Merkezi"> Eğlence Merkezi</label><label><input type="checkbox" name="neighborhoodFeatures" value="Fuar"> Fuar</label><label><input type="checkbox" name="neighborhoodFeatures" value="Göl"> Göl</label><label><input type="checkbox" name="neighborhoodFeatures" value="Hastane"> Hastane</label><label><input type="checkbox" name="neighborhoodFeatures" value="Havra"> Havra</label><label><input type="checkbox" name="neighborhoodFeatures" value="İlkokul-Ortaokul"> İlkokul-Ortaokul</label><label><input type="checkbox" name="neighborhoodFeatures" value="İtfaiye"> İtfaiye</label><label><input type="checkbox" name="neighborhoodFeatures" value="Lise"> Lise</label><label><input type="checkbox" name="neighborhoodFeatures" value="Market"> Market</label><label><input type="checkbox" name="neighborhoodFeatures" value="Park"> Park</label><label><input type="checkbox" name="neighborhoodFeatures" value="Polis Merkezi"> Polis Merkezi</label><label><input type="checkbox" name="neighborhoodFeatures" value="Sağlık Ocağı"> Sağlık Ocağı</label><label><input type="checkbox" name="neighborhoodFeatures" value="Semt Pazarı"> Semt Pazarı</label><label><input type="checkbox" name="neighborhoodFeatures" value="Spor Salonu"> Spor Salonu</label><label><input type="checkbox" name="neighborhoodFeatures" value="Üniversite"> Üniversite</label><label class="other-field"><span>Diğer</span><input name="neighborhoodFeaturesOther" placeholder="Diğer özellik yazınız"></label></div></section>
+  <section class="form-section wide"><h2>7. Ulaşım Özellikleri</h2><div class="checkbox-grid"><label><input type="checkbox" name="transportFeatures" value="Anayol"> Anayol</label><label><input type="checkbox" name="transportFeatures" value="Avrasya Tüneli"> Avrasya Tüneli</label><label><input type="checkbox" name="transportFeatures" value="Boğaz Köprüleri"> Boğaz Köprüleri</label><label><input type="checkbox" name="transportFeatures" value="Cadde"> Cadde</label><label><input type="checkbox" name="transportFeatures" value="Deniz Otobüsü"> Deniz Otobüsü</label><label><input type="checkbox" name="transportFeatures" value="Dolmuş"> Dolmuş</label><label><input type="checkbox" name="transportFeatures" value="E-5"> E-5</label><label><input type="checkbox" name="transportFeatures" value="Havaalanı"> Havaalanı</label><label><input type="checkbox" name="transportFeatures" value="İskele"> İskele</label><label><input type="checkbox" name="transportFeatures" value="Marmaray"> Marmaray</label><label><input type="checkbox" name="transportFeatures" value="Metro"> Metro</label><label><input type="checkbox" name="transportFeatures" value="Metrobüs"> Metrobüs</label><label><input type="checkbox" name="transportFeatures" value="Minibüs"> Minibüs</label><label><input type="checkbox" name="transportFeatures" value="Otobüs Durağı"> Otobüs Durağı</label><label><input type="checkbox" name="transportFeatures" value="Sahil"> Sahil</label><label><input type="checkbox" name="transportFeatures" value="TEM"> TEM</label><label><input type="checkbox" name="transportFeatures" value="Tramvay"> Tramvay</label><label><input type="checkbox" name="transportFeatures" value="Tren İstasyonu"> Tren İstasyonu</label><label><input type="checkbox" name="transportFeatures" value="Ulaşım Kolaylığı"> Ulaşım Kolaylığı</label><label class="other-field"><span>Diğer</span><input name="transportFeaturesOther" placeholder="Diğer özellik yazınız"></label></div></section>
+  <section class="form-section wide"><h2>8. Manzara</h2><div class="checkbox-grid"><label><input type="checkbox" name="viewFeatures" value="Boğaz"> Boğaz</label><label><input type="checkbox" name="viewFeatures" value="Deniz"> Deniz</label><label><input type="checkbox" name="viewFeatures" value="Doğa"> Doğa</label><label><input type="checkbox" name="viewFeatures" value="Göl"> Göl</label><label><input type="checkbox" name="viewFeatures" value="Havuz"> Havuz</label><label><input type="checkbox" name="viewFeatures" value="Nehir"> Nehir</label><label><input type="checkbox" name="viewFeatures" value="Park & Yeşil Alan"> Park & Yeşil Alan</label><label><input type="checkbox" name="viewFeatures" value="Şehir"> Şehir</label><label class="other-field"><span>Diğer</span><input name="viewFeaturesOther" placeholder="Diğer özellik yazınız"></label></div></section>
+  <section class="form-section wide"><h2>9. Konut Tipi</h2><div class="checkbox-grid"><label><input type="checkbox" name="housingType" value="Daire"> Daire</label><label><input type="checkbox" name="housingType" value="Müstakil Ev / Villa"> Müstakil Ev / Villa</label><label><input type="checkbox" name="housingType" value="Residence"> Residence</label><label><input type="checkbox" name="housingType" value="Rezidans"> Rezidans</label><label><input type="checkbox" name="housingType" value="Yazlık"> Yazlık</label><label class="other-field"><span>Diğer</span><input name="housingTypeOther" placeholder="Diğer özellik yazınız"></label></div></section>
+
+  <section class="form-section"><h2>10. Engelliye ve Yaşlıya Uygun</h2><div class="choice-row"><strong>Uygunluk</strong><label><input type="radio" name="accessible" value="Evet"> Evet</label><label><input type="radio" name="accessible" value="Hayır"> Hayır</label></div></section>
+  <section class="form-section"><h2>11. Açıklama / Özel Notlar</h2><label class="full"><span>Açıklama</span><textarea name="description" rows="7" placeholder="Açıklama ve özel notlarınızı yazınız..."></textarea></label></section>
+
+  <section class="form-section"><h2>12. Fotoğraflar</h2>
+    <label class="photo-drop"><input id="photoInput" name="photos" type="file" accept="image/*" multiple><span>📷</span><strong>Fotoğraf ekle veya sürükle bırak</strong><small>En fazla 35 fotoğraf</small></label>
+    <div class="photo-counter">Eklenen Fotoğraf Adedi <strong id="photoCount">0 / 35</strong></div>
+    <div class="photo-preview-grid" id="photoPreviewGrid"></div>
+  </section>
+
+  <section class="form-section wide"><h2>13. Danışman / Ofis Bilgileri</h2><div class="form-grid three">
+    <label class=""><span>Ofis Adı</span><input name="officeName" type="text" placeholder="Ofis adını yazınız"></label>
+    <label class=""><span>Danışman</span><input name="consultantName" type="text" placeholder="Açane Saydıran"></label>
+    <label class=""><span>E-Posta</span><input name="consultantEmail" type="email" placeholder="ornek@mail.com"></label>
+    <label class=""><span>Yetki No</span><input name="authorizationNo" type="text" placeholder="Örn: 1001719"></label>
+    <label class=""><span>Tel</span><input name="consultantPhone" type="tel" placeholder="05xx xxx xx xx"></label>
+    <label class=""><span>İmza</span><input name="signature" type="text" placeholder="İmza"></label>
+  </div></section>
+
+  <div class="portfolio-form-actions"><button class="primary-btn" type="submit">Portföyü oluştur</button><button class="ghost-btn" type="button" id="fillPortfolioSampleBtn">Örnek form doldur</button><button class="ghost-btn" type="reset">Formu temizle</button></div>
+</form>
+<aside class="portfolio-preview-panel"><div class="preview-sticky"><span class="eyebrow">Canlı portföy</span><h2>Oluşan Portföy</h2><div id="panelPreview" class="property-grid single"></div><div id="portfolioSummary" class="portfolio-summary empty">Formu doldurup fotoğraf eklediğinde portföy burada oluşacak.</div></div></aside>
+</section>
+  </section>
+  <section class="admin-section" id="siteContentPanel" hidden>
+    <div class="settings-panel">
+      <div><span class="eyebrow">İçerik Yönetimi</span><h2>Site metinlerini düzenle</h2><p>Demo olarak değişiklikler tarayıcı hafızasına kaydedilir ve önizleme alanında görünür.</p></div>
+      <form id="siteContentForm" class="settings-form">
+        <label><span>Site başlığı</span><input name="siteTitle" value="Parla Gayrimenkul"></label>
+        <label><span>Hero başlığı</span><textarea name="heroTitle" rows="3">Akçay ve Körfez portföylerini daha net, hızlı ve güvenilir sunun.</textarea></label>
+        <label><span>Hero açıklaması</span><textarea name="heroText" rows="4">Anasayfayı sadeleştirdik: güçlü arama, öne çıkan portföyler ve net aksiyonlar.</textarea></label>
+        <label><span>Telefon</span><input name="phone" value="+90 5xx xxx xx xx"></label>
+        <label><span>Adres / bölge</span><input name="region" value="Akçay · Edremit · Körfez"></label>
+        <button class="primary-btn" type="submit">İçeriği kaydet</button>
+      </form>
+      <div class="content-preview" id="contentPreview"><strong>Parla Gayrimenkul</strong><p>Kaydedilen içerik burada önizlenir.</p></div>
+    </div>
+  </section>
+  <section class="admin-section" id="themePanel" hidden>
+    <div class="settings-panel">
+      <div><span class="eyebrow">Tema Yönetimi</span><h2>Renk ve görünüm ayarları</h2><p>Renkler canlı olarak uygulanır. Demo sürümde localStorage'a kaydedilir.</p></div>
+      <form id="themeForm" class="settings-form theme-form">
+        <label><span>Ana lacivert</span><input name="navy" type="color" value="#0b1b3a"></label>
+        <label><span>Birincil mavi</span><input name="blue" type="color" value="#1d4ed8"></label>
+        <label><span>Turkuaz vurgu</span><input name="cyan" type="color" value="#22d3ee"></label>
+        <label><span>Arka plan</span><input name="bg" type="color" value="#eef6ff"></label>
+        <button class="primary-btn" type="submit">Temayı uygula</button>
+        <button class="ghost-btn" type="button" id="resetThemeBtn">Varsayılana dön</button>
+      </form>
+      <div class="theme-preview"><span>PARLA</span><strong>Modern mavi/lacivert kurumsal görünüm</strong><button class="primary-btn" type="button">Örnek buton</button></div>
+    </div>
+  </section>
+
+  <section class="admin-section" id="sahibindenImportPanel" hidden>
+    <div class="settings-panel admin-wide">
+      <div>
+        <span class="eyebrow">Sahibinden Entegrasyonu</span>
+        <h2>JSON dosyasından portföy aktar</h2>
+        <p>Sahibinden’den dışa aktardığımız JSON dosyasını buraya yükle. Sistem ilan başlığı, fiyat, konum, özellikler, açıklama ve fotoğrafları Parla portföy formatına çevirir.</p>
+        <ul class="mini-checklist">
+          <li>Desteklenen biçim: JSON array veya <code>{"listings": [...]}</code></li>
+          <li>Tekrarlı ilanlar <code>ilan_no</code> / <code>id</code> ile güncellenir.</li>
+          <li>Fotoğraf URL’leri varsa kart görseli olarak kullanılır.</li>
+          <li>Bu demo sürümde kayıtlar tarayıcı hafızasına eklenir.</li>
+        </ul>
+      </div>
+      <div class="manager-stack">
+        <label class="json-upload-card"><span>JSON dosyası seç</span><input id="sahibindenJsonFile" type="file" accept="application/json,.json"><strong>Dosya seç veya aşağıya JSON yapıştır</strong></label>
+        <textarea id="sahibindenJsonText" class="json-import-textarea" rows="12" placeholder='[{"ilan_no":"1234567890","baslik":"Akçay’da 2+1 Daire","fiyat":"4.750.000 TL"}]'></textarea>
+        <div class="portfolio-form-actions json-actions"><button class="primary-btn" type="button" id="importSahibindenJsonBtn">JSON’u portföylere aktar</button><button class="ghost-btn" type="button" id="loadSahibindenSampleBtn">Örnek JSON yükle</button><a class="ghost-btn" href="data/sahibinden-portfoyler-ornek.json" download>Örnek dosyayı indir</a></div>
+        <div id="sahibindenImportResult" class="portfolio-summary empty">Henüz JSON aktarımı yapılmadı.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="admin-section" id="portfolioManagerPanel" hidden>
+    <div class="settings-panel admin-wide">
+      <div><span class="eyebrow">Portföy Yönetimi</span><h2>Portföyleri düzenle / sil</h2><p>Portföy Ekle formuyla oluşturulan kayıtlar burada listelenir. Seçili kaydı hızlıca güncelleyebilir veya silebilirsin.</p></div>
+      <div class="manager-stack">
+        <div id="portfolioManagerList" class="manager-list"></div>
+        <form id="portfolioEditForm" class="settings-form compact-editor" hidden>
+          <h3>Seçili portföyü düzenle</h3>
+          <input name="id" type="hidden">
+          <label><span>Başlık</span><input name="title"></label>
+          <label><span>Fiyat</span><input name="price"></label>
+          <label><span>Konum</span><input name="location"></label>
+          <label><span>Oda</span><input name="rooms"></label>
+          <label><span>m²</span><input name="sqm"></label>
+          <label><span>Açıklama</span><textarea name="description" rows="4"></textarea></label>
+          <button class="primary-btn" type="submit">Portföyü güncelle</button>
+        </form>
+      </div>
+    </div>
+  </section>
+  <section class="admin-section" id="sliderPanel" hidden>
+    <div class="settings-panel">
+      <div><span class="eyebrow">Slider / Vitrin</span><h2>Ana sayfa vitrin ayarları</h2><p>Hero görseli, vitrin başlığı ve öne çıkan açıklama için demo yönetim alanı.</p></div>
+      <form id="sliderForm" class="settings-form">
+        <label><span>Hero görsel URL</span><input name="heroImage" value="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1300&q=80"></label>
+        <label><span>Vitrin etiketi</span><input name="label" value="Öne çıkan fırsat"></label>
+        <label><span>Vitrin başlığı</span><input name="title" value="Güre’de havuzlu 3+1 villa"></label>
+        <label><span>Vitrin fiyatı</span><input name="price" value="₺36.000.000"></label>
+        <button class="primary-btn" type="submit">Vitrini kaydet</button>
+      </form>
+      <div class="content-preview" id="sliderPreview"><strong>Öne çıkan fırsat</strong><h3>Güre’de havuzlu 3+1 villa</h3><p>₺36.000.000</p></div>
+    </div>
+  </section>
+  <section class="admin-section" id="agentsPanel" hidden>
+    <div class="settings-panel admin-wide">
+      <div><span class="eyebrow">Danışman Yönetimi</span><h2>Danışman ekle / düzenle</h2><p>Ofis ekibini demo olarak yönet. Kayıtlar tarayıcı hafızasında tutulur.</p></div>
+      <div class="manager-stack">
+        <form id="agentForm" class="settings-form compact-editor">
+          <input name="id" type="hidden">
+          <label><span>Ad Soyad</span><input name="name" placeholder="Danışman adı" required></label>
+          <label><span>Unvan</span><input name="title" placeholder="Portföy danışmanı"></label>
+          <label><span>Telefon</span><input name="phone" placeholder="05xx xxx xx xx"></label>
+          <label><span>E-posta</span><input name="email" placeholder="mail@parla.com"></label>
+          <button class="primary-btn" type="submit">Danışmanı kaydet</button>
+        </form>
+        <div id="agentsList" class="manager-list"></div>
+      </div>
+    </div>
+  </section>
+  <section class="admin-section" id="officePanel" hidden>
+    <div class="settings-panel">
+      <div><span class="eyebrow">Ofis Bilgileri</span><h2>Kurumsal iletişim bilgileri</h2><p>Adres, telefon, e-posta ve çalışma saatlerini düzenle.</p></div>
+      <form id="officeForm" class="settings-form">
+        <label><span>Ofis adı</span><input name="officeName" value="Parla Gayrimenkul"></label>
+        <label><span>Adres</span><textarea name="address" rows="3">Akçay / Edremit / Balıkesir</textarea></label>
+        <label><span>Telefon</span><input name="phone" value="+90 5xx xxx xx xx"></label>
+        <label><span>E-posta</span><input name="email" value="info@parlagayrimenkul.com"></label>
+        <label><span>Çalışma saatleri</span><input name="hours" value="Hafta içi 09:00 - 18:30"></label>
+        <button class="primary-btn" type="submit">Ofis bilgisini kaydet</button>
+      </form>
+      <div class="content-preview" id="officePreview"><strong>Parla Gayrimenkul</strong><p>Akçay / Edremit / Balıkesir</p></div>
+    </div>
+  </section>
+  <section class="admin-section" id="membersPanel" hidden>
+    <div class="settings-panel"><div><span class="eyebrow">Üyeler</span><h2>Kayıtlı kullanıcılar</h2><p>Admin hariç tüm demo üyeler burada listelenir.</p></div><div id="membersList" class="manager-list"></div></div>
+  </section>
+  <section class="admin-section" id="appointmentsAdminPanel" hidden>
+    <div class="settings-panel admin-wide"><div><span class="eyebrow">Randevular</span><h2>Gelen randevu talepleri</h2><p>Randevu durumunu Yeni, Onaylandı, İptal veya Tamamlandı olarak değiştirebilirsin.</p></div><div id="adminAppointmentsList" class="appointment-list"></div></div>
+  </section>
+</section>
+
+<section class="role-panel" id="userPanel" hidden>
+  <div class="panel-head">
+    <div><span class="eyebrow">Üye Paneli</span><h1>Randevu ve favoriler</h1><p>Üyeler portföy yönetemez; sadece randevu oluşturabilir ve favorilerini takip edebilir.</p></div>
+    <button class="ghost-btn" type="button" data-logout>Çıkış yap</button>
+  </div>
+  <div class="member-grid">
+    <form id="appointmentForm" class="member-card">
+      <h2>Randevu oluştur</h2>
+      <label><span>Portföy / konu</span><input name="topic" placeholder="Görmek istediğiniz portföy veya konu" required></label>
+      <label><span>Tarih</span><input name="date" type="date" required></label>
+      <label><span>Saat</span><input name="time" type="time" required></label>
+      <label><span>Not</span><textarea name="note" rows="4" placeholder="Ek notunuz"></textarea></label>
+      <button class="primary-btn" type="submit">Randevu oluştur</button>
+    </form>
+    <div class="member-card"><h2>Favorilerim</h2><p>Gayrimenkuller sayfasında kalp butonuyla eklediğin portföyler burada görünür.</p><div id="favoritesList" class="favorites-list"></div><a class="ghost-btn" href="gayrimenkuller.html">Portföyleri incele</a></div>
+    <div class="member-card"><h2>Randevularım</h2><div id="userAppointmentsList" class="appointment-list"></div></div>
+  </div>
+</section>
+</main><footer class="site-footer">
+  <div><strong>Parla Gayrimenkul</strong><p>Akçay ve Körfez bölgesi için kurumsal portföy vitrini, danışman profilleri ve talep toplama odaklı modern web sitesi konsepti.</p></div>
+  <div class="footer-links"><a href="gayrimenkuller.html">Portföyler</a><a href="hizmetler.html">Hizmetler</a><a href="iletisim.html">İletişim</a><a href="panel.html">Ofis paneli</a></div>
+</footer><div class="toast" id="toast" role="status" aria-live="polite"></div><script src="script.js"></script></body></html>

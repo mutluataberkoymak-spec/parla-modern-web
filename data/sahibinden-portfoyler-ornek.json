@@ -1,0 +1,43 @@
+{
+  "source": "sahibinden",
+  "exported_at": "2026-06-28T00:00:00+03:00",
+  "listings": [
+    {
+      "ilan_no": "1234567890",
+      "sahibinden_url": "https://www.sahibinden.com/ilan/emlak-konut-satilik-ornek-ilan-1234567890/detay",
+      "baslik": "PARLA'DAN ALTINKUM'DA DENİZE YAKIN 2+1 DAİRE",
+      "islem_tipi": "Satılık",
+      "kategori": "Konut",
+      "alt_kategori": "Daire",
+      "fiyat": "4.750.000 TL",
+      "il": "Balıkesir",
+      "ilce": "Edremit",
+      "mahalle": "Altınkum",
+      "m2_brut": "110",
+      "m2_net": "95",
+      "oda_sayisi": "2+1",
+      "bina_yasi": "5-10 arası",
+      "bulundugu_kat": "Ara Kat",
+      "kat_sayisi": "4",
+      "isitma": "Doğalgaz Kombi",
+      "banyo_sayisi": "1",
+      "tapu_durumu": "Kat Mülkiyeti",
+      "krediye_uygun": "Evet",
+      "takas": "Hayır",
+      "aciklama": "Denize yakın, merkezi konumlu, kullanışlı plana sahip 2+1 daire. Parla Gayrimenkul güvencesiyle detaylı bilgi için iletişime geçebilirsiniz.",
+      "danisman": "Parla Ofis Ekibi",
+      "telefon": "+90 5xx xxx xx xx",
+      "fotograflar": [
+        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "ozellikler": {
+        "ic": ["Çelik Kapı", "Fiber İnternet", "Laminant Zemin"],
+        "dis": ["Açık Otopark"],
+        "muhit": ["Market", "Sahil", "Park"],
+        "ulasim": ["Minibüs", "Otobüs Durağı"],
+        "manzara": ["Şehir"]
+      }
+    }
+  ]
+}
