@@ -709,9 +709,9 @@ function renderPublicPropertyCard(item) {
   return `<article class="property-card enhanced-card" data-id="${escapeHtml(item.id)}" data-type="${escapeHtml(item.type)}" data-category="${escapeHtml(item.category)}" data-location="${escapeHtml(item.location.toLocaleLowerCase('tr-TR'))}" data-title="${escapeHtml(item.title.toLocaleLowerCase('tr-TR'))}">
     <a class="card-link" href="${escapeHtml(item.url)}" aria-label="${escapeHtml(item.title)} detay sayfasını aç">
       <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}">
-      <div class="property-body"><div class="meta"><span>${escapeHtml(item.type)} ${escapeHtml(item.category)}</span><span>${item.opportunity ? 'Fırsat' : 'Doğrulanmış'}</span></div><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.location)} · ${escapeHtml(item.rooms)} · ${escapeHtml(item.sqm)}</p><div class="smart-badges"><span>Yatırım ${escapeHtml(item.investmentScore || 75)}</span><span>${escapeHtml(item.source || 'Emlak Ofisinden')}</span>${item.priceDropped ? '<span>Fiyatı düştü</span>' : ''}</div><div class="summary-tags">${(item.tags || []).slice(0,3).map(tag => `<span>${escapeHtml(tag)}</span>`).join('')}</div><div class="card-bottom"><strong>${escapeHtml(item.price)}</strong><span class="detail-link">Detayı gör →</span></div></div>
+      <div class="property-body"><div class="meta"><span>${escapeHtml(item.type)} ${escapeHtml(item.category)}</span><span>${item.opportunity ? 'Fırsat' : 'Doğrulanmış'}</span></div><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.location)} · ${escapeHtml(item.rooms)} · ${escapeHtml(item.sqm)}</p><div class="smart-badges"><span>Güven ${escapeHtml(item.trustScore || Math.min(98, (item.investmentScore || 75) + 6))}</span><span>Güncel ${escapeHtml(item.listedDaysAgo || 1)} gün</span><span>Yatırım ${escapeHtml(item.investmentScore || 75)}</span><span>${escapeHtml(item.source || 'Emlak Ofisinden')}</span>${item.priceDropped ? '<span>Fiyatı düştü</span>' : ''}</div><div class="summary-tags">${(item.tags || []).slice(0,3).map(tag => `<span>${escapeHtml(tag)}</span>`).join('')}</div><div class="card-bottom"><strong>${escapeHtml(item.price)}</strong><span class="detail-link">Detayı gör →</span></div></div>
     </a>
-    <div class="card-tools"><button class="ghost-btn small" type="button" data-favorite-title="${escapeHtml(item.title)}">♡ Favori</button><label class="compare-check"><input type="checkbox" data-compare-id="${escapeHtml(item.id)}" ${checked}> Karşılaştır</label></div>
+    <div class="card-tools"><button class="ghost-btn small" type="button" data-favorite-title="${escapeHtml(item.title)}">♡ Favori</button><button class="ghost-btn small" type="button" data-report-listing="${escapeHtml(item.title)}">İlanı bildir</button><label class="compare-check"><input type="checkbox" data-compare-id="${escapeHtml(item.id)}" ${checked}> Karşılaştır</label></div>
   </article>`;
 }
 function collectListingFilters() {
@@ -1145,3 +1145,33 @@ document.querySelector('#findForMeForm')?.addEventListener('submit', event => {
   event.currentTarget.reset();
   showToast('Arama talebin kaydedildi. Uygun portföy eşleştirme havuzuna düştü.');
 });
+
+
+// Trust center and listing report flow
+const TRUST_REPORTS_KEY = 'konutta:trustReports';
+function getTrustReports() { return readJson(TRUST_REPORTS_KEY, []); }
+function saveTrustReport(report) {
+  const current = getTrustReports();
+  writeJson(TRUST_REPORTS_KEY, [{ id: `BIL-${Date.now()}`, createdAt: new Date().toISOString(), ...report }, ...current].slice(0, 50));
+  renderTrustReports();
+}
+function renderTrustReports() {
+  const list = document.querySelector('#trustReportList');
+  if (!list) return;
+  const reports = getTrustReports();
+  list.innerHTML = reports.length ? reports.slice(0, 8).map(r => `<span>${escapeHtml(r.reason || 'Bildirim')} · ${escapeHtml(r.listing || r.title || 'İlan')}</span>`).join('') : '<span>Henüz bildirim yok</span>';
+}
+document.querySelector('#trustReportForm')?.addEventListener('submit', event => {
+  event.preventDefault();
+  const data = Object.fromEntries(new FormData(event.currentTarget));
+  saveTrustReport(data);
+  event.currentTarget.reset();
+  showToast('Bildirim alındı. Güven ön inceleme kuyruğuna eklendi.');
+});
+document.addEventListener('click', event => {
+  const title = event.target?.dataset?.reportListing;
+  if (!title) return;
+  saveTrustReport({ listing: title, title, reason: 'İlan kartından şüpheli ilan bildirimi', note: 'Kullanıcı ilan kartından bildirdi.' });
+  showToast('İlan bildirimi kaydedildi. Güven ekibi ön inceleme yapacak.');
+});
+renderTrustReports();

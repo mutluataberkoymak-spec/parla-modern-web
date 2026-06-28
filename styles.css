@@ -684,3 +684,28 @@ main { width: min(1200px, calc(100% - 32px)); margin: 0 auto; }
 .insight-grid span { color:var(--muted); }
 @media(max-width:980px){ .public-intelligence-strip,.listing-market-insights { grid-template-columns:1fr; } .city-card-grid,.insight-grid { grid-template-columns:1fr 1fr; } .property-grid.list-view .enhanced-card,.property-grid.list-view .enhanced-card .card-link { grid-template-columns:1fr; } }
 @media(max-width:640px){ .ai-search-card form,.find-for-me-card form,.city-card-grid,.insight-grid { grid-template-columns:1fr; } }
+
+
+/* Trust center differentiation */
+.trust-differentiator, .trust-promise-grid, .verification-method, .fraud-education, .report-listing-section { margin: 44px 0; padding: 28px; border: 1px solid var(--line); border-radius: 34px; background: rgba(255,255,255,.82); box-shadow: 0 18px 60px rgba(15,23,42,.08); }
+.trust-differentiator { display: grid; grid-template-columns: .9fr 1.1fr; gap: 22px; align-items: center; }
+.trust-differentiator h2, .verification-method h2, .fraud-education h2, .report-listing-section h2 { margin: 8px 0 12px; font-family: ui-serif, Georgia, "Times New Roman", serif; font-size: clamp(30px,4vw,52px); line-height: 1; letter-spacing: -.05em; }
+.trust-differentiator p, .verification-method p, .fraud-education p, .report-listing-section p { color: var(--muted); line-height: 1.7; }
+.trust-solution-grid, .trust-promise-grid, .education-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.trust-solution-grid article, .trust-promise-grid article, .education-grid article { padding: 18px; border: 1px solid var(--line); border-radius: 22px; background: #fff; }
+.trust-solution-grid strong, .trust-promise-grid strong, .education-grid strong { display:block; color: var(--navy); font-size: 18px; margin-bottom: 8px; }
+.trust-solution-grid span, .trust-promise-grid p, .education-grid p { color: var(--muted); line-height: 1.55; }
+.trust-hero { max-width: 950px; }
+.verification-method { display: grid; grid-template-columns: .85fr 1.15fr; gap: 20px; align-items: start; }
+.verification-list { display: grid; gap: 10px; }
+.verification-list div { display: flex; justify-content: space-between; gap: 16px; padding: 16px; border-radius: 18px; background: #fff; border: 1px solid var(--line); }
+.verification-list strong { color: var(--blue); }
+.verification-list span { color: var(--muted); text-align: right; }
+.report-listing-section { display: grid; grid-template-columns: .85fr 1.15fr; gap: 18px; }
+.report-form { display: grid; gap: 10px; }
+.report-form input, .report-form select, .report-form textarea { border: 1px solid var(--line); border-radius: 16px; padding: 13px 14px; font-weight: 750; background: #fff; }
+.report-form textarea { min-height: 110px; resize: vertical; }
+.card-tools { flex-wrap: wrap; }
+.ghost-btn.small { min-height: 36px; padding: 8px 11px; font-size: 12px; }
+@media(max-width:980px){ .trust-differentiator,.verification-method,.report-listing-section { grid-template-columns:1fr; } .trust-solution-grid,.trust-promise-grid,.education-grid { grid-template-columns:1fr 1fr; } }
+@media(max-width:640px){ .trust-solution-grid,.trust-promise-grid,.education-grid,.verification-list div { grid-template-columns:1fr; display:grid; } .verification-list span { text-align:left; } }
