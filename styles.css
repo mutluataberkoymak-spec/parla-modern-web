@@ -414,3 +414,103 @@ main { width: min(1200px, calc(100% - 32px)); margin: 0 auto; }
 .faq-grid summary { cursor: pointer; font-weight: 900; color: var(--navy); }
 .faq-grid p { color: var(--muted); line-height: 1.6; }
 @media(max-width: 900px){ .advanced-listing-shell { grid-template-columns: 1fr; } .advanced-filter-panel { position: static; } .faq-grid { grid-template-columns: 1fr; } .listing-toolbar { align-items: flex-start; flex-direction: column; } }
+
+
+/* Portfolio form alignment fixes */
+.portfolio-form-shell,
+.portfolio-form-shell * { box-sizing: border-box; }
+.portfolio-form { align-content: start; }
+.portfolio-form .portfolio-form-actions {
+  position: static;
+  order: 99;
+  margin-top: 4px;
+  justify-content: flex-start;
+  align-items: center;
+  background: #fff;
+  backdrop-filter: none;
+}
+.json-actions { position: static; }
+.portfolio-form .form-section { overflow: visible; }
+.portfolio-form .form-section h2 { position: relative; z-index: 1; }
+.portfolio-form label span,
+.form-top-meta span {
+  display: block;
+  min-height: 15px;
+  line-height: 1.25;
+  word-break: normal;
+}
+.portfolio-form input,
+.portfolio-form select,
+.portfolio-form textarea,
+.form-top-meta input,
+.form-top-meta select {
+  min-height: 48px;
+  line-height: 1.25;
+}
+.portfolio-form textarea { min-height: 150px; resize: vertical; }
+.choice-row {
+  display: grid;
+  grid-template-columns: minmax(94px, 1fr) repeat(auto-fit, minmax(72px, auto));
+  gap: 10px 12px;
+  align-items: center;
+  min-height: 48px;
+}
+.choice-row strong { margin-right: 0; line-height: 1.25; }
+.choice-row label {
+  display: inline-grid;
+  grid-template-columns: 16px auto;
+  justify-content: start;
+  align-items: center;
+  min-width: 0;
+  line-height: 1.25;
+  white-space: normal;
+}
+.choice-row input[type="radio"],
+.choice-row input[type="checkbox"],
+.checkbox-grid input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  min-height: 16px;
+  padding: 0;
+  margin: 0;
+  flex: 0 0 16px;
+}
+.checkbox-grid {
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  gap: 12px 16px;
+  align-items: start;
+}
+.checkbox-grid label {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  align-items: start;
+  gap: 8px;
+  min-height: 28px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.checkbox-grid .other-field {
+  grid-template-columns: auto minmax(180px, 1fr);
+  align-items: center;
+}
+.form-grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.form-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.form-grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media(max-width: 1100px) {
+  .portfolio-form-shell { grid-template-columns: 1fr; }
+  .preview-sticky { position: static; }
+  .form-grid.four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media(max-width: 640px) {
+  .portfolio-form-shell { padding: 12px; border-radius: 22px; }
+  .form-section { padding: 14px; border-radius: 20px; }
+  .form-section h2 { margin: -14px -14px 14px; border-radius: 20px 20px 0 0; }
+  .form-grid.four,
+  .form-grid.three,
+  .form-grid.two { grid-template-columns: 1fr; }
+  .checkbox-grid { grid-template-columns: 1fr; }
+  .choice-row { grid-template-columns: 1fr; }
+  .portfolio-form .portfolio-form-actions { flex-direction: column; align-items: stretch; }
+  .portfolio-form .portfolio-form-actions .primary-btn,
+  .portfolio-form .portfolio-form-actions .ghost-btn { width: 100%; justify-content: center; }
+}
