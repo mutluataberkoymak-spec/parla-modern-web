@@ -26,7 +26,7 @@ document.querySelector('[data-search-jump]')?.addEventListener('submit', e => {
   e.preventDefault();
   const fd = new FormData(e.currentTarget);
   const q = new URLSearchParams({ type: fd.get('type') || 'Hepsi', category: fd.get('category') || 'Hepsi', q: fd.get('q') || '' });
-  location.href = 'gayrimenkuller.html?' + q.toString();
+  location.href = 'ilanlar.html?' + q.toString();
 });
 
 const grid = document.querySelector('#propertyGrid');
@@ -687,3 +687,124 @@ document.querySelector('#importSahibindenJsonBtn')?.addEventListener('click', ()
   if (!text.trim()) { showToast('Önce JSON dosyası seç veya JSON yapıştır.'); return; }
   try { importSahibindenJsonText(text); } catch (error) { showToast(`JSON aktarım hatası: ${error.message}`); }
 });
+
+
+// Public listing pages: advanced filters, sorting and comparison
+const COMPARE_KEY = 'parla:compare';
+function parseNumber(value) {
+  const raw = String(value || '').replace(/[^0-9]/g, '');
+  return raw ? Number(raw) : 0;
+}
+function getCompareIds() { return readJson(COMPARE_KEY, []); }
+function setCompareIds(ids) { writeJson(COMPARE_KEY, ids.slice(0, 4)); }
+function propertyMatchesPreset(item, preset) {
+  if (preset === 'satilik') return item.type === 'Satılık';
+  if (preset === 'kiralik') return item.type === 'Kiralık';
+  if (preset === 'firsat') return Boolean(item.opportunity || item.featured);
+  return true;
+}
+function renderPublicPropertyCard(item) {
+  const compareIds = getCompareIds();
+  const checked = compareIds.includes(item.id) ? 'checked' : '';
+  return `<article class="property-card enhanced-card" data-id="${escapeHtml(item.id)}" data-type="${escapeHtml(item.type)}" data-category="${escapeHtml(item.category)}" data-location="${escapeHtml(item.location.toLocaleLowerCase('tr-TR'))}" data-title="${escapeHtml(item.title.toLocaleLowerCase('tr-TR'))}">
+    <a class="card-link" href="${escapeHtml(item.url)}" aria-label="${escapeHtml(item.title)} detay sayfasını aç">
+      <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}">
+      <div class="property-body"><div class="meta"><span>${escapeHtml(item.type)} ${escapeHtml(item.category)}</span><span>${item.opportunity ? 'Fırsat' : 'Doğrulanmış'}</span></div><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.location)} · ${escapeHtml(item.rooms)} · ${escapeHtml(item.sqm)}</p><div class="summary-tags">${(item.tags || []).slice(0,3).map(tag => `<span>${escapeHtml(tag)}</span>`).join('')}</div><div class="card-bottom"><strong>${escapeHtml(item.price)}</strong><span class="detail-link">Detayı gör →</span></div></div>
+    </a>
+    <div class="card-tools"><button class="ghost-btn small" type="button" data-favorite-title="${escapeHtml(item.title)}">♡ Favori</button><label class="compare-check"><input type="checkbox" data-compare-id="${escapeHtml(item.id)}" ${checked}> Karşılaştır</label></div>
+  </article>`;
+}
+function collectListingFilters() {
+  const get = id => document.querySelector(id)?.value || '';
+  return {
+    q: get('#listingSearch').toLocaleLowerCase('tr-TR'),
+    type: get('#listingType') || 'Hepsi',
+    category: get('#listingCategory') || 'Hepsi',
+    location: get('#listingLocation') || 'Hepsi',
+    minPrice: parseNumber(get('#minPrice')),
+    maxPrice: parseNumber(get('#maxPrice')),
+    minSqm: parseNumber(get('#minSqm')),
+    maxSqm: parseNumber(get('#maxSqm')),
+    sort: get('#listingSort') || 'featured'
+  };
+}
+function filterPublicProperties() {
+  const shell = document.querySelector('[data-listing-page]');
+  if (!shell || !Array.isArray(window.PARLA_PROPERTIES || PARLA_PROPERTIES)) return [];
+  const preset = shell.dataset.preset || 'all';
+  const f = collectListingFilters();
+  let items = (window.PARLA_PROPERTIES || PARLA_PROPERTIES).filter(item => propertyMatchesPreset(item, preset));
+  items = items.filter(item => {
+    const text = [item.title, item.location, item.category, item.group, item.rooms, ...(item.tags || [])].join(' ').toLocaleLowerCase('tr-TR');
+    const typeOk = f.type === 'Hepsi' || item.type === f.type;
+    const catOk = f.category === 'Hepsi' || item.category === f.category || item.group === f.category;
+    const locOk = f.location === 'Hepsi' || item.location.toLocaleLowerCase('tr-TR').includes(f.location.toLocaleLowerCase('tr-TR'));
+    const qOk = !f.q || text.includes(f.q);
+    const minPriceOk = !f.minPrice || item.priceNumber >= f.minPrice;
+    const maxPriceOk = !f.maxPrice || item.priceNumber <= f.maxPrice;
+    const minSqmOk = !f.minSqm || item.sqmNumber >= f.minSqm;
+    const maxSqmOk = !f.maxSqm || item.sqmNumber <= f.maxSqm;
+    return typeOk && catOk && locOk && qOk && minPriceOk && maxPriceOk && minSqmOk && maxSqmOk;
+  });
+  items.sort((a,b) => {
+    if (f.sort === 'price-asc') return a.priceNumber - b.priceNumber;
+    if (f.sort === 'price-desc') return b.priceNumber - a.priceNumber;
+    if (f.sort === 'sqm-desc') return b.sqmNumber - a.sqmNumber;
+    if (f.sort === 'newest') return String(b.id).localeCompare(String(a.id));
+    return Number(b.featured || b.opportunity) - Number(a.featured || a.opportunity) || b.priceNumber - a.priceNumber;
+  });
+  return items;
+}
+function renderCompareTable() {
+  const target = document.querySelector('#compareTable');
+  if (!target || typeof PARLA_PROPERTIES === 'undefined') return;
+  const selected = getCompareIds().map(id => PARLA_PROPERTIES.find(p => p.id === id)).filter(Boolean);
+  if (!selected.length) { target.className = 'compare-table empty'; target.textContent = 'Henüz karşılaştırmaya ilan eklenmedi.'; return; }
+  target.className = 'compare-table';
+  const rows = [
+    ['Fiyat', 'price'], ['Konum', 'location'], ['Kategori', 'category'], ['Durum', 'type'], ['Oda', 'rooms'], ['m²', 'sqm']
+  ];
+  target.innerHTML = `<table><thead><tr><th>Özellik</th>${selected.map(p => `<th>${escapeHtml(p.title)}</th>`).join('')}</tr></thead><tbody>${rows.map(([label,key]) => `<tr><th>${label}</th>${selected.map(p => `<td>${escapeHtml(p[key])}</td>`).join('')}</tr>`).join('')}</tbody></table><button class="ghost-btn" type="button" id="clearCompare">Karşılaştırmayı temizle</button>`;
+  document.querySelector('#clearCompare')?.addEventListener('click', () => { setCompareIds([]); renderPublicListings(); showToast('Karşılaştırma temizlendi.'); });
+}
+function renderPublicListings() {
+  const grid = document.querySelector('#dynamicPropertyGrid');
+  if (!grid || typeof PARLA_PROPERTIES === 'undefined') return;
+  const items = filterPublicProperties();
+  grid.innerHTML = items.map(renderPublicPropertyCard).join('');
+  const count = document.querySelector('#listingCount');
+  if (count) count.textContent = `${items.length} portföy`;
+  const summary = document.querySelector('#listingSummary');
+  if (summary) summary.textContent = items.length ? 'Filtrelenmiş sonuçlar listeleniyor' : 'Bu filtrelerle sonuç yok';
+  const empty = document.querySelector('#dynamicEmptyState');
+  if (empty) empty.hidden = items.length !== 0;
+  grid.querySelectorAll('[data-compare-id]').forEach(input => input.addEventListener('change', event => {
+    const id = event.currentTarget.dataset.compareId;
+    let ids = getCompareIds();
+    if (event.currentTarget.checked) {
+      if (!ids.includes(id)) ids.push(id);
+      if (ids.length > 4) { ids = ids.slice(-4); showToast('En fazla 4 ilan karşılaştırılır.'); }
+    } else ids = ids.filter(x => x !== id);
+    setCompareIds(ids); renderCompareTable(); renderPublicListings();
+  }));
+  grid.querySelectorAll('[data-favorite-title]').forEach(btn => btn.addEventListener('click', () => showToast(`${btn.dataset.favoriteTitle} favorilere eklendi.`)));
+  renderCompareTable();
+}
+function initPublicListingPage() {
+  if (!document.querySelector('[data-listing-page]')) return;
+  const params = new URLSearchParams(location.search);
+  const map = { '#listingSearch': 'q', '#listingType': 'type', '#listingCategory': 'category' };
+  Object.entries(map).forEach(([selector,key]) => { const el = document.querySelector(selector); if (el && params.get(key)) el.value = params.get(key); });
+  ['#listingSearch','#listingType','#listingCategory','#listingLocation','#minPrice','#maxPrice','#minSqm','#maxSqm','#listingSort'].forEach(selector => {
+    const el = document.querySelector(selector); if (!el) return;
+    el.addEventListener(el.tagName === 'INPUT' ? 'input' : 'change', renderPublicListings);
+  });
+  document.querySelector('#clearListingFilters')?.addEventListener('click', () => {
+    ['#listingSearch','#minPrice','#maxPrice','#minSqm','#maxSqm'].forEach(s => { const el = document.querySelector(s); if (el) el.value = ''; });
+    ['#listingType','#listingCategory','#listingLocation'].forEach(s => { const el = document.querySelector(s); if (el) el.value = 'Hepsi'; });
+    const sort = document.querySelector('#listingSort'); if (sort) sort.value = 'featured';
+    renderPublicListings(); showToast('Filtreler temizlendi.');
+  });
+  renderPublicListings();
+}
+initPublicListingPage();

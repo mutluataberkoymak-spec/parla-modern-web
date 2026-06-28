@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /panel.html
+Disallow: /audits/
+
+Sitemap: https://www.konutta.com/sitemap.xml
