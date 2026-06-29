@@ -606,47 +606,90 @@ const sahibindenSampleJson = {
 };
 
 function normalizeSahibindenListings(raw) {
-  const list = Array.isArray(raw) ? raw : (Array.isArray(raw?.listings) ? raw.listings : []);
-  if (!list.length) throw new Error('JSON içinde listings dizisi bulunamadı.');
+  const list = Array.isArray(raw)
+    ? raw
+    : (Array.isArray(raw?.listings)
+      ? raw.listings
+      : (Array.isArray(raw?.['İlan Listesi'])
+        ? raw['İlan Listesi']
+        : (Array.isArray(raw?.['Ilan Listesi']) ? raw['Ilan Listesi'] : [])));
+
+  if (!list.length) throw new Error('JSON içinde listings veya İlan Listesi dizisi bulunamadı.');
+
+  const pick = (obj, keys, fallback = '') => {
+    for (const key of keys) {
+      const value = obj?.[key];
+      if (value !== undefined && value !== null && value !== '') return value;
+    }
+    return fallback;
+  };
+  const yesList = (obj, keys) => keys.filter(key => obj?.[key] === 'Evet' || obj?.[key] === true);
+  const splitAddress = value => {
+    const parts = String(value || '').split('/').map(part => part.trim()).filter(Boolean);
+    return { il: parts[0] || '', ilce: parts[1] || '', mahalle: parts[2] || '' };
+  };
+  const plainText = html => String(html || '')
+    .replace(/<br\s*\/?>(\s*)/gi, '\n')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
   return list.map((item, index) => {
-    const photos = item.fotograflar || item.photos || item.images || [];
-    const features = item.ozellikler || item.features || {};
-    const location = item.location || [item.il, item.ilce, item.mahalle].filter(Boolean).join(' / ');
-    const gross = item.m2_brut || item.m2 || item.sqm || item.metrekare || '';
+    const attrs = pick(item, ['Özellikler', 'ozellikler', 'features'], {}) || {};
+    const photos = pick(item, ['fotograflar', 'photos', 'images', 'Aktif Görsel Listesi', 'Aktif Gorsel Listesi'], []) || [];
+    const categoriesText = pick(item, ['Kategoriler', 'kategori', 'category'], '');
+    const categories = String(categoriesText).split(',').map(x => x.trim()).filter(Boolean);
+    const addressParts = splitAddress(pick(item, ['Adres', 'adres'], ''));
+    const location = pick(item, ['location', 'Konum Metni'], '') || [
+      pick(item, ['il'], addressParts.il),
+      pick(item, ['ilce'], addressParts.ilce),
+      pick(item, ['mahalle'], addressParts.mahalle),
+    ].filter(Boolean).join(' / ');
+    const gross = pick(item, ['m2_brut', 'm2', 'sqm', 'metrekare'], '') || pick(attrs, ['m² (Brüt)', 'm2_brut', 'm²', 'm2'], '');
+    const net = pick(item, ['m2_net'], '') || pick(attrs, ['m² (Net)', 'm2_net'], '');
+    const listingNo = pick(item, ['ilan_no', 'İlan no', 'Ilan no', 'id'], '');
+    const descriptionHtml = pick(item, ['aciklama', 'Açıklama', 'Açiklama', 'description'], '');
+    const titleDeed = pick(item, ['tapu_durumu'], '') || pick(attrs, ['Tapu Durumu'], '');
+    const activePhotoList = Array.isArray(photos) ? photos : [];
+
     return {
-      id: `SHBD-${item.ilan_no || item.id || Date.now() + '-' + index}`,
+      id: `SHBD-${listingNo || Date.now() + '-' + index}`,
       source: 'sahibinden',
-      sourceUrl: item.sahibinden_url || item.url || item.link || '',
-      sourceListingNo: item.ilan_no || item.id || '',
-      title: item.baslik || item.title || `Sahibinden Portföy ${index + 1}`,
-      category: item.kategori || item.category || item.alt_kategori || 'Konut',
-      type: item.islem_tipi || item.durum || item.type || 'Satılık',
-      price: item.fiyat || item.price || 'Fiyat belirtilmedi',
+      sourceUrl: pick(item, ['sahibinden_url', 'url', 'link', 'Sahibinden URL', 'İlan URL'], ''),
+      sourceListingNo: listingNo,
+      title: pick(item, ['baslik', 'Başlık', 'Baslik', 'title'], `Sahibinden Portföy ${index + 1}`),
+      category: pick(item, ['kategori', 'category'], '') || categories[1] || categories[0] || pick(attrs, ['Emlak Tipi'], 'Konut'),
+      type: pick(item, ['islem_tipi', 'durum', 'type'], '') || (pick(attrs, ['Emlak Tipi'], '').includes('Kiralık') ? 'Kiralık' : 'Satılık'),
+      price: pick(item, ['fiyat', 'Fiyat', 'price'], 'Fiyat belirtilmedi'),
       location: location || 'Konum belirtilmedi',
-      sqm: gross ? `${gross} m²` : (item.m2_net ? `${item.m2_net} m² net` : 'm² belirtilmedi'),
-      rooms: item.oda_sayisi || item.rooms || 'Oda belirtilmedi',
-      floor: item.bulundugu_kat || item.floor || '',
-      heating: item.isitma || item.heating || '',
-      bathrooms: item.banyo_sayisi || item.bathrooms || '',
-      openAreaSqm: item.acik_alan_m2 || item.openAreaSqm || '',
-      titleDeedStatus: item.tapu_durumu || item.titleDeedStatus || '',
-      propertyNumber: item.tasinmaz_no || item.tasinmaz_numarasi || item.propertyNumber || '',
-      description: item.aciklama || item.description || 'Sahibinden JSON aktarımıyla oluşturulan portföy.',
-      advisor: item.danisman || item.advisor || 'Konutta.com Ofis Ekibi',
-      phone: item.telefon || item.phone || '',
-      photos: photos.map((url, photoIndex) => typeof url === 'string' ? { name: `sahibinden-${item.ilan_no || index}-${photoIndex + 1}`, url } : url),
+      coordinates: pick(item, ['Konum', 'coordinates'], ''),
+      sqm: gross ? `${gross} m²` : (net ? `${net} m² net` : 'm² belirtilmedi'),
+      rooms: pick(item, ['oda_sayisi', 'rooms'], '') || pick(attrs, ['Oda Sayısı'], 'Oda belirtilmedi'),
+      floor: pick(item, ['bulundugu_kat', 'floor'], '') || pick(attrs, ['Bulunduğu Kat'], ''),
+      heating: pick(item, ['isitma', 'heating'], '') || pick(attrs, ['Isıtma'], ''),
+      bathrooms: pick(item, ['banyo_sayisi', 'bathrooms'], '') || pick(attrs, ['Banyo Sayısı'], ''),
+      openAreaSqm: pick(item, ['acik_alan_m2', 'openAreaSqm'], ''),
+      titleDeedStatus: titleDeed,
+      propertyNumber: pick(item, ['tasinmaz_no', 'tasinmaz_numarasi', 'propertyNumber'], '') || pick(attrs, ['Taşınmaz Numarası'], ''),
+      description: plainText(descriptionHtml) || 'Sahibinden JSON aktarımıyla oluşturulan portföy.',
+      advisor: pick(item, ['danisman', 'Danışman', 'advisor'], 'Konutta.com Ofis Ekibi'),
+      phone: pick(item, ['telefon', 'Telefon', 'phone'], ''),
+      photos: activePhotoList.map((url, photoIndex) => typeof url === 'string'
+        ? { name: `sahibinden-${listingNo || index}-${photoIndex + 1}`, url }
+        : url),
       features: {
-        interior: features.ic || features.interior || [],
-        exterior: features.dis || features.exterior || [],
-        neighborhood: features.muhit || features.neighborhood || [],
-        transport: features.ulasim || features.transport || [],
-        view: features.manzara || features.view || [],
-        housingType: [item.alt_kategori || item.housingType || item.konut_tipi].filter(Boolean),
-        fronts: features.cephe || features.fronts || [],
-        deedType: [item.tapu_durumu].filter(Boolean),
+        interior: pick(attrs, ['ic', 'interior'], null) || yesList(attrs, ['ADSL', 'Çelik Kapı', 'Fiber İnternet', 'Görüntülü Diyafon', 'Hilton Banyo', 'Isıcam', 'Kartonpiyer', 'Laminat Zemin', 'Mutfak (Ankastre)', 'PVC Doğrama', 'Spot Aydınlatma', 'Vestiyer']),
+        exterior: pick(attrs, ['dis', 'exterior'], null) || yesList(attrs, ['Asansör', 'Otopark', 'Açık Otopark', 'Hidrofor', 'Isı Yalıtımı', 'Kablo TV', 'Uydu', 'Ses Yalıtımı']),
+        neighborhood: pick(attrs, ['muhit', 'neighborhood'], null) || yesList(attrs, ['Alışveriş Merkezi', 'Belediye', 'Cami', 'Eczane', 'Hastane', 'Market', 'Park', 'Plaj', 'Semt Pazarı', 'Şehir Merkezi']),
+        transport: pick(attrs, ['ulasim', 'transport'], null) || yesList(attrs, ['Anayol', 'Cadde', 'Dolmuş', 'Minibüs', 'Otobüs Durağı', 'Sahil']),
+        view: pick(attrs, ['manzara', 'view'], null) || yesList(attrs, ['Deniz', 'Doğa', 'Park & Yeşil Alan', 'Şehir']),
+        housingType: [categories.at(-1), pick(attrs, ['Emlak Tipi'], ''), pick(item, ['alt_kategori', 'housingType', 'konut_tipi'], '')].filter(Boolean),
+        fronts: yesList(attrs, ['Batı', 'Doğu', 'Güney', 'Kuzey']),
+        deedType: [titleDeed].filter(Boolean),
       },
-      address: { street: item.cadde_sokak || '', buildingNo: item.bina_no || '', apartmentNo: item.daire_no || '' },
-      deed: { blockNo: item.ada || '', parcelNo: item.parsel || '', sheetNo: item.pafta || '', deedArea: item.tapu_yuzolcumu || '', landShare: item.arsa_payi || '', volumeNo: '', pageNo: '' },
+      address: { street: pick(item, ['cadde_sokak'], ''), buildingNo: pick(item, ['bina_no'], ''), apartmentNo: pick(item, ['daire_no'], '') },
+      deed: { blockNo: pick(item, ['ada'], ''), parcelNo: pick(item, ['parsel'], ''), sheetNo: pick(item, ['pafta'], ''), deedArea: pick(item, ['tapu_yuzolcumu'], ''), landShare: pick(item, ['arsa_payi'], ''), volumeNo: '', pageNo: '' },
     };
   });
 }
