@@ -740,6 +740,58 @@ function parseNumber(value) {
 }
 function getCompareIds() { return readJson(COMPARE_KEY, []); }
 function setCompareIds(ids) { writeJson(COMPARE_KEY, ids.slice(0, 4)); }
+function getPublicImportedProperties() {
+  const imported = readJson('parla:portfolios', []);
+  const staticIds = new Set(((window.PARLA_PROPERTIES || [])).map(item => item.id));
+  const placeholder = 'https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&w=1200&q=80';
+  return imported
+    .filter(item => item && item.id && !staticIds.has(item.id))
+    .map((item, index) => {
+      const photo = item.photos?.find(p => p?.url)?.url || '';
+      const image = /^https?:\/\//i.test(photo) ? photo : placeholder;
+      const priceNumber = parseNumber(item.price);
+      const sqmNumber = parseNumber(item.sqm);
+      const featureTags = [
+        ...(item.features?.interior || []),
+        ...(item.features?.exterior || []),
+        ...(item.features?.neighborhood || []),
+        ...(item.features?.transport || []),
+        ...(item.features?.view || [])
+      ].slice(0, 4);
+      return {
+        ...item,
+        id: item.id,
+        title: item.title || `Aktarılan Portföy ${index + 1}`,
+        type: item.type || 'Satılık',
+        category: item.category || item.features?.housingType?.[0] || 'Konut',
+        group: item.category || 'Konut',
+        location: item.location || 'Konum belirtilmedi',
+        rooms: item.rooms || 'Oda belirtilmedi',
+        sqm: item.sqm || 'm² belirtilmedi',
+        sqmNumber,
+        price: item.price || 'Fiyat belirtilmedi',
+        priceNumber,
+        featured: true,
+        opportunity: false,
+        source: item.source === 'sahibinden' ? 'Sahibinden aktarımı' : 'Panel aktarımı',
+        listedDaysAgo: 0,
+        hasMap: Boolean(item.coordinates),
+        hasVideo: false,
+        priceDropped: false,
+        investmentScore: 78,
+        trustScore: 90,
+        rentYield: 55,
+        buildingAge: item.buildingAge || '',
+        image,
+        url: `panel.html#imported-${encodeURIComponent(item.id)}`,
+        tags: featureTags.length ? featureTags : ['JSON aktarımı', item.sourceListingNo ? `İlan No ${item.sourceListingNo}` : 'Panel portföyü'].filter(Boolean)
+      };
+    });
+}
+function getAllPublicProperties() {
+  const base = Array.isArray(window.PARLA_PROPERTIES || PARLA_PROPERTIES) ? (window.PARLA_PROPERTIES || PARLA_PROPERTIES) : [];
+  return [...getPublicImportedProperties(), ...base];
+}
 function propertyMatchesPreset(item, preset) {
   if (preset === 'satilik') return item.type === 'Satılık';
   if (preset === 'kiralik') return item.type === 'Kiralık';
@@ -777,10 +829,10 @@ function collectListingFilters() {
 }
 function filterPublicProperties() {
   const shell = document.querySelector('[data-listing-page]');
-  if (!shell || !Array.isArray(window.PARLA_PROPERTIES || PARLA_PROPERTIES)) return [];
+  if (!shell) return [];
   const preset = shell.dataset.preset || 'all';
   const f = collectListingFilters();
-  let items = (window.PARLA_PROPERTIES || PARLA_PROPERTIES).filter(item => propertyMatchesPreset(item, preset));
+  let items = getAllPublicProperties().filter(item => propertyMatchesPreset(item, preset));
   items = items.filter(item => {
     const text = [item.title, item.location, item.category, item.group, item.rooms, ...(item.tags || [])].join(' ').toLocaleLowerCase('tr-TR');
     const typeOk = f.type === 'Hepsi' || item.type === f.type;
@@ -813,8 +865,9 @@ function filterPublicProperties() {
 }
 function renderCompareTable() {
   const target = document.querySelector('#compareTable');
-  if (!target || typeof PARLA_PROPERTIES === 'undefined') return;
-  const selected = getCompareIds().map(id => PARLA_PROPERTIES.find(p => p.id === id)).filter(Boolean);
+  if (!target) return;
+  const allProperties = getAllPublicProperties();
+  const selected = getCompareIds().map(id => allProperties.find(p => p.id === id)).filter(Boolean);
   if (!selected.length) { target.className = 'compare-table empty'; target.textContent = 'Henüz karşılaştırmaya ilan eklenmedi.'; return; }
   target.className = 'compare-table';
   const rows = [
@@ -825,7 +878,7 @@ function renderCompareTable() {
 }
 function renderPublicListings() {
   const grid = document.querySelector('#dynamicPropertyGrid');
-  if (!grid || typeof PARLA_PROPERTIES === 'undefined') return;
+  if (!grid) return;
   const items = filterPublicProperties();
   grid.innerHTML = items.map(renderPublicPropertyCard).join('');
   const count = document.querySelector('#listingCount');
@@ -970,12 +1023,12 @@ function getMapCoords(item, index) {
   return [22 + (index * 17) % 66, 24 + (index * 23) % 58];
 }
 function getPortalMapItems() {
-  if (typeof PARLA_PROPERTIES === 'undefined') return [];
+  const allProperties = typeof getAllPublicProperties === 'function' ? getAllPublicProperties() : (window.PARLA_PROPERTIES || []);
   if (typeof filterPublicProperties === 'function' && document.querySelector('[data-listing-page]')) return filterPublicProperties();
   const type = document.querySelector('#listingType')?.value || 'Hepsi';
   const loc = document.querySelector('#listingLocation')?.value || 'Hepsi';
   const q = (document.querySelector('#listingSearch')?.value || '').toLocaleLowerCase('tr-TR');
-  return PARLA_PROPERTIES.filter(item => {
+  return allProperties.filter(item => {
     const typeOk = type === 'Hepsi' || item.type === type;
     const locOk = loc === 'Hepsi' || item.location.toLocaleLowerCase('tr-TR').includes(loc.toLocaleLowerCase('tr-TR'));
     const text = [item.title,item.location,item.category,item.group,item.rooms,...(item.tags||[])].join(' ').toLocaleLowerCase('tr-TR');
