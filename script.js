@@ -809,6 +809,20 @@ function renderPublicPropertyCard(item) {
     <div class="card-tools"><button class="ghost-btn small" type="button" data-favorite-title="${escapeHtml(item.title)}">♡ Favori</button><button class="ghost-btn small" type="button" data-report-listing="${escapeHtml(item.title)}">İlanı bildir</button><label class="compare-check"><input type="checkbox" data-compare-id="${escapeHtml(item.id)}" ${checked}> Karşılaştır</label></div>
   </article>`;
 }
+function renderLegacyImportedPropertyGrid() {
+  const legacyGrid = document.querySelector('#propertyGrid');
+  if (!legacyGrid || document.querySelector('#dynamicPropertyGrid')) return;
+  const imported = getPublicImportedProperties();
+  if (!imported.length) return;
+  const existingIds = new Set([...legacyGrid.querySelectorAll('.property-card')].map(card => card.dataset.id).filter(Boolean));
+  const html = imported
+    .filter(item => !existingIds.has(item.id))
+    .map(renderPublicPropertyCard)
+    .join('');
+  if (html) legacyGrid.insertAdjacentHTML('afterbegin', html);
+  injectFavoriteButtons();
+  applyFilters();
+}
 function collectListingFilters() {
   const get = id => document.querySelector(id)?.value || '';
   return {
@@ -917,6 +931,7 @@ function initPublicListingPage() {
   renderPublicListings();
 }
 initPublicListingPage();
+renderLegacyImportedPropertyGrid();
 
 document.querySelector('#toggleListView')?.addEventListener('click', () => {
   const grid = document.querySelector('#dynamicPropertyGrid');
